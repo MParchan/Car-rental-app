@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using CarRentalServer.Repository.Entities;
-using CarRentalServer.Repository.Repositories.CarTypeRepository;
+using CarRentalServer.Repository.Repositories;
 using CarRentalServer.Service.DTOs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace CarRentalServer.Service.Services.CarTypeService
 {
     public class CarTypeService : ICarTypeService
     {
-        private readonly ICarTypeRepository _carTypeRepository;
+        private readonly IGenericRepository<CarType> _carTypeRepository;
         private readonly IMapper _mapper;
-        public CarTypeService(ICarTypeRepository carTypeRepository, IMapper mapper)
+        public CarTypeService(IGenericRepository<CarType> carTypeRepository, IMapper mapper)
         {
             _carTypeRepository = carTypeRepository;
             _mapper = mapper;
@@ -26,19 +27,48 @@ namespace CarRentalServer.Service.Services.CarTypeService
         }
         public async Task<CarTypeDto> GetCarTypeByIdAsync(int id)
         {
-            return _mapper.Map<CarTypeDto>(await _carTypeRepository.GetByIdAsync(id));
+            var carType = await _carTypeRepository.GetByIdAsync(id);
+            if (carType == null)
+            {
+                throw new KeyNotFoundException("Car type not found");
+            }
+            return _mapper.Map<CarTypeDto>(carType);
         }
         public async Task AddCarTypeAsync(CarTypeDto carType)
         {
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(carType, serviceProvider: null, items: null);
+            if (!Validator.TryValidateObject(carType, validationContext, validationResults, true))
+            {
+                throw new ValidationException(string.Join(", ", validationResults.Select(vr => vr.ErrorMessage)));
+            }
+
             await _carTypeRepository.AddAsync(_mapper.Map<CarType>(carType));
         }
         public async Task UpdateCarTypeAsync(CarTypeDto carType)
         {
-            await _carTypeRepository.UpdateAsync(_mapper.Map<CarType>(carType));
+            var existingCarType = await _carTypeRepository.GetByIdAsync(carType.CarTypeId);
+            if(existingCarType == null)
+            {
+                throw new KeyNotFoundException("Car type not found");
+            }
+
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(carType, serviceProvider: null, items: null);
+            if (!Validator.TryValidateObject(carType, validationContext, validationResults, true))
+            {
+                throw new ValidationException(string.Join(", ", validationResults.Select(vr => vr.ErrorMessage)));
+            }
+
+            await _carTypeRepository.UpdateAsync(_mapper.Map(carType, existingCarType));
         }
         public async Task DeleteCarTypeAsync(int id)
         {
             var carType = await _carTypeRepository.GetByIdAsync(id);
+            if (carType == null)
+            {
+                throw new KeyNotFoundException("Car type not found");
+            }
             await _carTypeRepository.DeleteAsync(carType);
         }
     }

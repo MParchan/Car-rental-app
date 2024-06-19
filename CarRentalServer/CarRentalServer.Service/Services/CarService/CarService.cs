@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CarRentalServer.Repository.Entities;
-using CarRentalServer.Repository.Repositories.CarRepository;
-using CarRentalServer.Repository.Repositories.CarTypeRepository;
+using CarRentalServer.Repository.Repositories;
 using CarRentalServer.Service.DTOs;
 using System;
 using System.Collections.Generic;
@@ -13,9 +12,9 @@ namespace CarRentalServer.Service.Services.CarService
 {
     public class CarService : ICarService
     {
-        private readonly ICarRepository _carRepository;
+        private readonly IGenericRepository<Car> _carRepository;
         private readonly IMapper _mapper;
-        public CarService(ICarRepository carRepository, IMapper mapper)
+        public CarService(IGenericRepository<Car> carRepository, IMapper mapper)
         {
             _carRepository = carRepository;
             _mapper = mapper;
