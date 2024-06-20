@@ -16,5 +16,7 @@ namespace CarRentalServer.Repository.Entities
 
         public DbSet<CarType> CarTypes { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<LocationCar> LocationCars { get; set; }
     }
 }

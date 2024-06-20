@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace CarRentalServer.Repository.Entities
         public int CarId { get; set; }
         public int CarTypeId { get; set; }
         public string Model { get; set; }
+        [Precision(18, 2)]
         public decimal PricePerDay { get; set; }
         public int ProductionYear { get; set; }
         public int Horsepower { get; set; }

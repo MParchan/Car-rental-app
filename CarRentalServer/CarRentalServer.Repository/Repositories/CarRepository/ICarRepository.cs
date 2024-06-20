@@ -11,5 +11,6 @@ namespace CarRentalServer.Repository.Repositories.CarRepository
     {
         Task<IEnumerable<Car>> GetAllWithIncludesAsync();
         Task<Car> GetByIdWithIncludesAsync(int id);
+        Task<Car> GetByIdNoTrackingAsync(int id);
     }
 }

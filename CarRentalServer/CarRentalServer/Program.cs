@@ -5,6 +5,9 @@ using CarRentalServer.Service.Services.CarTypeService;
 using CarRentalServer.Service.Services.CarService;
 using CarRentalServer.API.ViewModels;
 using CarRentalServer.Repository.Repositories.CarRepository;
+using CarRentalServer.Service.Services.LocationServis;
+using CarRentalServer.Repository.Repositories.LocationCarRepository;
+using CarRentalServer.Service.Services.LocationCarServis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,9 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<ICarTypeService, CarTypeService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<ILocationServis, LocationServis>();
+builder.Services.AddScoped<ILocationCarRepository, LocationCarRepository>();
+builder.Services.AddScoped<ILocationCarServis, LocationCarService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

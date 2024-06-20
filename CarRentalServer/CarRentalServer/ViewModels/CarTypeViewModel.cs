@@ -18,7 +18,7 @@ namespace CarRentalServer.API.ViewModels
 
     public class CarTypeViewModelPut
     {
-        [Required]
+        [Required(ErrorMessage = "Car type {0} is required.")]
         public int CarTypeId { get; set; }
 
         [Required(ErrorMessage = "Car type {0} is required.")]

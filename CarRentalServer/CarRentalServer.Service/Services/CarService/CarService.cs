@@ -24,10 +24,12 @@ namespace CarRentalServer.Service.Services.CarService
             _mapper = mapper;
         }
 
+
         public async Task<IEnumerable<CarDto>> GetAllCarsAsync()
         {
             return _mapper.Map<List<CarDto>>(await _carRepository.GetAllWithIncludesAsync());
         }
+
         public async Task<CarDto> GetCarByIdAsync(int id)
         {
             var car = await _carRepository.GetByIdAsync(id);
@@ -38,11 +40,12 @@ namespace CarRentalServer.Service.Services.CarService
 
             return _mapper.Map<CarDto>(car);
         }
+
         public async Task<CarDto> AddCarAsync(CarDto car)
         {
             try
             {
-                var carTypeExists = await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
+                await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
             }
             catch (KeyNotFoundException)
             {
@@ -61,9 +64,10 @@ namespace CarRentalServer.Service.Services.CarService
             await _carRepository.AddAsync(carEntity);
             return await GetCarByIdAsync(carEntity.CarId);
         }
+
         public async Task UpdateCarAsync(CarDto car)
         {
-            var existingCar = await _carRepository.GetByIdAsync(car.CarId);
+            var existingCar = await _carRepository.GetByIdNoTrackingAsync(car.CarId);
             if (existingCar == null)
             {
                 throw new KeyNotFoundException("Car not found");
@@ -71,7 +75,7 @@ namespace CarRentalServer.Service.Services.CarService
 
             try
             {
-                var carTypeExists = await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
+                await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
             }
             catch (KeyNotFoundException)
             {
@@ -84,9 +88,11 @@ namespace CarRentalServer.Service.Services.CarService
             {
                 throw new ValidationException(string.Join(", ", validationResults.Select(vr => vr.ErrorMessage)));
             }
+            car.PricePerDay = Math.Round(car.PricePerDay, 2);
 
-            await _carRepository.UpdateAsync(_mapper.Map(car, existingCar));
+            await _carRepository.UpdateAsync(_mapper.Map<Car>(car));
         }
+
         public async Task DeleteCarAsync(int id)
         {
             var car = await _carRepository.GetByIdAsync(id);
