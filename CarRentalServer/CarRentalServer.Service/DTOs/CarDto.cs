@@ -12,11 +12,7 @@ namespace CarRentalServer.Service.DTOs
         public int CarId { get; set; }
 
         [Required]
-        public int CarTypeId { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Field {0} must be up to {1} characters long.")]
-        public string Model { get; set; }
+        public int ModelId { get; set; }
 
         [Required]
         [Range(0.01, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
@@ -32,12 +28,8 @@ namespace CarRentalServer.Service.DTOs
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
-        public int SeatsNumber { get; set; }
-
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public int Range { get; set; }
 
-        public virtual CarTypeDto CarType { get; set; }
+        public virtual ModelDto Model { get; set; }
     }
 }

@@ -8,15 +8,20 @@ namespace CarRentalServer.API.ViewModels
     {
         public AutoMapperProfile()
         {
-            CreateMap<CarTypeDto, CarType>().ReverseMap();
-            CreateMap<CarTypeDto, CarTypeViewModelGet>();
-            CreateMap<CarTypeViewModelPost, CarTypeDto>();
-            CreateMap<CarTypeViewModelPut, CarTypeDto>();
+            CreateMap<BrandDto, Brand>().ReverseMap();
+            CreateMap<BrandDto, BrandViewModelGet>();
+            CreateMap<BrandViewModelPost, BrandDto>();
+            CreateMap<BrandViewModelPut, BrandDto>();
 
             CreateMap<CarDto, Car>().ReverseMap();
             CreateMap<CarDto, CarViewModelGet>();
             CreateMap<CarViewModelPost, CarDto>();
             CreateMap<CarViewModelPut, CarDto>();
+
+            CreateMap<CarTypeDto, CarType>().ReverseMap();
+            CreateMap<CarTypeDto, CarTypeViewModelGet>();
+            CreateMap<CarTypeViewModelPost, CarTypeDto>();
+            CreateMap<CarTypeViewModelPut, CarTypeDto>();
 
             CreateMap<LocationDto, Location>().ReverseMap();
             CreateMap<LocationDto, LocationViewModelGet>();
@@ -27,6 +32,11 @@ namespace CarRentalServer.API.ViewModels
             CreateMap<LocationCarDto, LocationCarViewModelGet>();
             CreateMap<LocationCarViewModelPost, LocationCarDto>();
             CreateMap<LocationCarViewModelPut, LocationCarDto>();
+
+            CreateMap<ModelDto, Model>().ReverseMap();
+            CreateMap<ModelDto, ModelViewModelGet>();
+            CreateMap<ModelViewModelPost, ModelDto>();
+            CreateMap<ModelViewModelPut, ModelDto>();
         }
     }
 }

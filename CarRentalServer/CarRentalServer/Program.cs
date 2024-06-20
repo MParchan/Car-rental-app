@@ -8,6 +8,9 @@ using CarRentalServer.Repository.Repositories.CarRepository;
 using CarRentalServer.Service.Services.LocationServis;
 using CarRentalServer.Repository.Repositories.LocationCarRepository;
 using CarRentalServer.Service.Services.LocationCarServis;
+using CarRentalServer.Service.Services.BrandService;
+using CarRentalServer.Repository.Repositories.ModelRepository;
+using CarRentalServer.Service.Services.ModelService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,9 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ILocationServis, LocationServis>();
 builder.Services.AddScoped<ILocationCarRepository, LocationCarRepository>();
 builder.Services.AddScoped<ILocationCarServis, LocationCarService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IModelRepository, ModelRepository>();
+builder.Services.AddScoped<IModelService, ModelService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

@@ -3,6 +3,7 @@ using CarRentalServer.Repository.Entities;
 using CarRentalServer.Repository.Repositories.CarRepository;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarTypeService;
+using CarRentalServer.Service.Services.ModelService;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,12 +16,12 @@ namespace CarRentalServer.Service.Services.CarService
     public class CarService : ICarService
     {
         private readonly ICarRepository _carRepository;
-        private readonly ICarTypeService _carTypeService;
+        private readonly IModelService _modelService;
         private readonly IMapper _mapper;
-        public CarService(ICarRepository carRepository, ICarTypeService carTypeService, IMapper mapper)
+        public CarService(ICarRepository carRepository, IModelService modelService, IMapper mapper)
         {
             _carRepository = carRepository;
-            _carTypeService = carTypeService;
+            _modelService = modelService;
             _mapper = mapper;
         }
 
@@ -32,7 +33,7 @@ namespace CarRentalServer.Service.Services.CarService
 
         public async Task<CarDto> GetCarByIdAsync(int id)
         {
-            var car = await _carRepository.GetByIdAsync(id);
+            var car = await _carRepository.GetByIdWithIncludesAsync(id);
             if (car == null)
             {
                 throw new KeyNotFoundException("Car not found");
@@ -45,7 +46,7 @@ namespace CarRentalServer.Service.Services.CarService
         {
             try
             {
-                await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
+                await _modelService.GetModelByIdAsync(car.ModelId);
             }
             catch (KeyNotFoundException)
             {
@@ -75,7 +76,7 @@ namespace CarRentalServer.Service.Services.CarService
 
             try
             {
-                await _carTypeService.GetCarTypeByIdAsync(car.CarTypeId);
+                await _modelService.GetModelByIdAsync(car.ModelId);
             }
             catch (KeyNotFoundException)
             {

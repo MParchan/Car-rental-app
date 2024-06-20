@@ -19,13 +19,19 @@ namespace CarRentalServer.Repository.Repositories.CarRepository
         public async Task<IEnumerable<Car>> GetAllWithIncludesAsync()
         {
             return await _context.Cars
-                .Include(car => car.CarType)
+                .Include(car => car.Model)
+                    .ThenInclude(model => model.Brand)
+                .Include(car => car.Model)
+                    .ThenInclude(model => model.CarType)
                 .ToListAsync();
         }
         public async Task<Car> GetByIdWithIncludesAsync(int id)
         {
             return await _context.Cars
-                .Include(car => car.CarType)
+                .Include(car => car.Model)
+                    .ThenInclude(model => model.Brand)
+                .Include(car => car.Model)
+                    .ThenInclude(model => model.CarType)
                 .FirstOrDefaultAsync(car => car.CarId == id);
         }
         public async Task<Car> GetByIdNoTrackingAsync(int id)
