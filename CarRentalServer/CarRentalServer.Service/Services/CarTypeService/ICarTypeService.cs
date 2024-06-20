@@ -11,7 +11,7 @@ namespace CarRentalServer.Service.Services.CarTypeService
     {
         Task<IEnumerable<CarTypeDto>> GetAllCarTypesAsync();
         Task<CarTypeDto> GetCarTypeByIdAsync(int id);
-        Task AddCarTypeAsync(CarTypeDto carType);
+        Task<CarTypeDto> AddCarTypeAsync(CarTypeDto carType);
         Task UpdateCarTypeAsync(CarTypeDto carType);
         Task DeleteCarTypeAsync(int id);
     }

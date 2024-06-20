@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalServer.Service.Services.CarTypeService;
 using CarRentalServer.Service.Services.CarService;
 using CarRentalServer.API.ViewModels;
+using CarRentalServer.Repository.Repositories.CarRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICarTypeService, CarTypeService>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

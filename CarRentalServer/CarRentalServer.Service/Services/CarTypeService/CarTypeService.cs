@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace CarRentalServer.Service.Services.CarTypeService
             }
             return _mapper.Map<CarTypeDto>(carType);
         }
-        public async Task AddCarTypeAsync(CarTypeDto carType)
+        public async Task<CarTypeDto> AddCarTypeAsync(CarTypeDto carType)
         {
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(carType, serviceProvider: null, items: null);
@@ -43,7 +44,9 @@ namespace CarRentalServer.Service.Services.CarTypeService
                 throw new ValidationException(string.Join(", ", validationResults.Select(vr => vr.ErrorMessage)));
             }
 
-            await _carTypeRepository.AddAsync(_mapper.Map<CarType>(carType));
+            var carTypeEntity = _mapper.Map<CarType>(carType);
+            await _carTypeRepository.AddAsync(carTypeEntity);
+            return await GetCarTypeByIdAsync(carTypeEntity.CarTypeId);
         }
         public async Task UpdateCarTypeAsync(CarTypeDto carType)
         {

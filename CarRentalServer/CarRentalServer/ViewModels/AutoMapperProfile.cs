@@ -9,10 +9,14 @@ namespace CarRentalServer.API.ViewModels
         public AutoMapperProfile()
         {
             CreateMap<CarTypeDto, CarType>().ReverseMap();
-            CreateMap<CarTypeViewModel, CarTypeDto>().ReverseMap();
+            CreateMap<CarTypeDto, CarTypeViewModelGet>().ReverseMap();
+            CreateMap<CarTypeViewModelPost, CarTypeDto>().ReverseMap();
+            CreateMap<CarTypeViewModelPut, CarTypeDto>().ReverseMap();
 
             CreateMap<CarDto, Car>().ReverseMap();
-            CreateMap<CarViewModel, CarDto>().ReverseMap();
+            CreateMap<CarDto, CarViewModelGet>();
+            CreateMap<CarViewModelPost, CarDto>();
+            CreateMap<CarViewModelPut, CarDto>();
         }
     }
 }

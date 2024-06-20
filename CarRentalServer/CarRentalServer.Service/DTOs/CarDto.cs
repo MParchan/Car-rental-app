@@ -9,7 +9,6 @@ namespace CarRentalServer.Service.DTOs
 {
     public class CarDto
     {
-        [Key]
         public int CarId { get; set; }
 
         [Required]
@@ -20,8 +19,7 @@ namespace CarRentalServer.Service.DTOs
         public string Model { get; set; }
 
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
-        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Value for {0} must have up to two decimal places.")]
+        [Range(0.01, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public decimal PricePerDay { get; set; }
 
         [Required]

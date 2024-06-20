@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CarRentalServer.API.ViewModels;
-using CarRentalServer.Repository.Entities;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarTypeService;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalServer.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/car-types")]
     [ApiController]
     public class CarTypeController : ControllerBase
     {
@@ -20,37 +19,37 @@ namespace CarRentalServer.API.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/CarType
+        // GET: api/car-types
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CarTypeViewModel>>> GetAllCarTypes()
+        public async Task<ActionResult<IEnumerable<CarTypeViewModelGet>>> GetAllCarTypes()
         {
             var carTypes = await _carTypeService.GetAllCarTypesAsync();
-            return Ok(_mapper.Map<List<CarTypeViewModel>>(carTypes));
+            return Ok(_mapper.Map<List<CarTypeViewModelGet>>(carTypes));
         }
 
-        // GET: api/CarType/:id
+        // GET: api/car-types/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<CarTypeViewModel>> GetCarTypeById(int id)
+        public async Task<ActionResult<CarTypeViewModelGet>> GetCarTypeById(int id)
         {
             try
             {
                 var carType = await _carTypeService.GetCarTypeByIdAsync(id);
-                return Ok(_mapper.Map<CarTypeViewModel>(carType));
+                return Ok(_mapper.Map<CarTypeViewModelGet>(carType));
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Car type not found");
+                return NotFound(new { ErrorMessage = ex.Message });
             }
         }
 
-        // POST: api/CarType
+        // POST: api/car-types
         [HttpPost]
-        public async Task<ActionResult<CarTypeViewModel>> AddCarType(CarTypeViewModel carType)
+        public async Task<ActionResult<CarTypeViewModelGet>> AddCarType(CarTypeViewModelPost carType)
         {
             try
             {
-                await _carTypeService.AddCarTypeAsync(_mapper.Map<CarTypeDto>(carType));
-                return CreatedAtAction(nameof(GetCarTypeById), new { id = carType.CarTypeId }, carType);
+                var createdCarType = await _carTypeService.AddCarTypeAsync(_mapper.Map<CarTypeDto>(carType));
+                return CreatedAtAction(nameof(GetCarTypeById), new { id = createdCarType.CarTypeId }, createdCarType);
             }
             catch(ValidationException ex)
             {
@@ -58,23 +57,23 @@ namespace CarRentalServer.API.Controllers
             }
         }
 
-        // PUT: api/CarType/:id
+        // PUT: api/car-types/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCarType(int id, CarTypeViewModel carType)
+        public async Task<IActionResult> UpdateCarType(int id, CarTypeViewModelPut carType)
         {
             try
             {
                 if (id != carType.CarTypeId)
                 {
-                    return BadRequest("Invalid Id");
+                    return BadRequest(new { ErrorMessage = "Invalid Id" });
                 }
                 await _carTypeService.UpdateCarTypeAsync(_mapper.Map<CarTypeDto>(carType));
 
                 return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Car type not found");
+                return NotFound(new { ErrorMessage = ex.Message });
             }
             catch (ValidationException ex)
             {
@@ -82,7 +81,7 @@ namespace CarRentalServer.API.Controllers
             }
         }
 
-        // DELETE: api/CarType/:id
+        // DELETE: api/car-types/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarType(int id)
         {
@@ -91,9 +90,9 @@ namespace CarRentalServer.API.Controllers
                 await _carTypeService.DeleteCarTypeAsync(id);
                 return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Car type not found");
+                return NotFound(new { ErrorMessage = ex.Message });
             }
         }
     }
