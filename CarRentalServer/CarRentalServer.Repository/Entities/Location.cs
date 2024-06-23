@@ -11,6 +11,6 @@ namespace CarRentalServer.Repository.Entities
     {
         [Key]
         public int LocationId { get; set; }
-        public string City { get; set; }
+        public string Name { get; set; }
     }
 }

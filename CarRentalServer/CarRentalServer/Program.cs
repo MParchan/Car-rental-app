@@ -14,6 +14,8 @@ using CarRentalServer.Service.Services.ModelService;
 using CarRentalServer.Repository.Repositories.ReservationRepository;
 using CarRentalServer.Service.Services.ReservationService;
 using System.Text.Json.Serialization;
+using CarRentalServer.Repository.Data;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +53,21 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred creating the Database.");
+    }
 }
 
 app.UseHttpsRedirection();

@@ -13,6 +13,6 @@ namespace CarRentalServer.Service.DTOs
 
         [Required]
         [StringLength(30, ErrorMessage = "Field {0} must be up to {1} characters long.")]
-        public string City { get; set; }
+        public string Name { get; set; }
     }
 }
