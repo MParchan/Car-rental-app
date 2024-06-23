@@ -14,6 +14,18 @@ namespace CarRentalServer.Repository.Data
             context.Database.EnsureCreated();
 
 
+            var roles = new Role[]
+            {
+                new Role{ Name = "Admin" },
+                new Role{ Name = "User" }
+            };
+            foreach (Role role in roles)
+            {
+                context.Roles.Add(role);
+            }
+            context.SaveChanges();
+
+
             Brand brand = new() { Name = "Tesla" };
             context.Brands.Add(brand);
             context.SaveChanges();

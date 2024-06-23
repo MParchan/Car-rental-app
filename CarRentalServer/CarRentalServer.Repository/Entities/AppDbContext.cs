@@ -21,10 +21,20 @@ namespace CarRentalServer.Repository.Entities
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationCar> LocationCars { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
 
             modelBuilder.Entity<LocationCar>(entity =>
             {
@@ -40,7 +50,6 @@ namespace CarRentalServer.Repository.Entities
                     .HasForeignKey(lc => lc.CarId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
 
             modelBuilder.Entity<Reservation>(entity =>
             {
@@ -86,6 +95,18 @@ namespace CarRentalServer.Repository.Entities
                     .HasForeignKey(m => m.CarTypeId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.UserId);
+
+                entity.HasOne(u => u.Role)
+                    .WithMany()
+                    .HasForeignKey(m => m.RoleId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
     }
 }
