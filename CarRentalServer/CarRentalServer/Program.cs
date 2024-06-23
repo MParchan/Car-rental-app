@@ -11,6 +11,9 @@ using CarRentalServer.Service.Services.LocationCarServis;
 using CarRentalServer.Service.Services.BrandService;
 using CarRentalServer.Repository.Repositories.ModelRepository;
 using CarRentalServer.Service.Services.ModelService;
+using CarRentalServer.Repository.Repositories.ReservationRepository;
+using CarRentalServer.Service.Services.ReservationService;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +31,15 @@ builder.Services.AddScoped<ILocationCarServis, LocationCarService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IModelRepository, ModelRepository>();
 builder.Services.AddScoped<IModelService, ModelService>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

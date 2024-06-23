@@ -11,8 +11,11 @@ namespace CarRentalServer.Service.Services.LocationCarServis
     {
         Task<IEnumerable<LocationCarDto>> GetAllLocationCarsAsync();
         Task<LocationCarDto> GetLocationCarByIdAsync(int id);
+        Task<LocationCarDto> GetLocationCarByLocationIdAndCarIdAsync(int locationId, int carId);
         Task<LocationCarDto> AddLocationCarAsync(LocationCarDto locationCar);
         Task UpdateLocationCarAsync(LocationCarDto locationCar);
         Task DeleteLocationCarAsync(int id);
+        Task RentCarAsync(int locationId, int carId);
+        Task ReturnCarAsync(int locationId, int carId);
     }
 }

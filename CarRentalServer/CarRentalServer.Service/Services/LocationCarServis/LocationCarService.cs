@@ -37,7 +37,27 @@ namespace CarRentalServer.Service.Services.LocationCarServis
             var locationCar = await _locationCarRepository.GetByIdWithIncludesAsync(id);
             if (locationCar == null)
             {
-                throw new KeyNotFoundException("Location car not found");
+                throw new KeyNotFoundException("Location car not found.");
+            }
+
+            return _mapper.Map<LocationCarDto>(locationCar);
+        }
+
+        public async Task<LocationCarDto> GetLocationCarByLocationIdAndCarIdAsync(int locationId, int carId)
+        {
+            try
+            {
+                await _locationService.GetLocationByIdAsync(locationId);
+                await _carService.GetCarByIdAsync(carId);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw;
+            }
+            var locationCar = await _locationCarRepository.GetByLocationIdAndCarIdAsync(locationId, carId);
+            if (locationCar == null)
+            {
+                throw new KeyNotFoundException("Location car not found.");
             }
 
             return _mapper.Map<LocationCarDto>(locationCar);
@@ -72,7 +92,7 @@ namespace CarRentalServer.Service.Services.LocationCarServis
             var existingLocationCar = await _locationCarRepository.GetByIdNoTrackingAsync(locationCar.LocationCarId);
             if (existingLocationCar == null)
             {
-                throw new KeyNotFoundException("Location car not found");
+                throw new KeyNotFoundException("Location car not found.");
             }
 
             try
@@ -100,9 +120,49 @@ namespace CarRentalServer.Service.Services.LocationCarServis
             var locationCar = await _locationCarRepository.GetByIdAsync(id);
             if (locationCar == null)
             {
-                throw new KeyNotFoundException("Location car not found");
+                throw new KeyNotFoundException("Location car not found.");
             }
             await _locationCarRepository.DeleteAsync(locationCar);
+        }
+
+        public async Task RentCarAsync(int locationId, int carId)
+        {
+            try
+            {
+                var locationCar = await GetLocationCarByLocationIdAndCarIdAsync(locationId, carId);
+                if (locationCar.Quantity == 0)
+                {
+                    throw new ValidationException("Car is not available in this location.");
+                }
+                locationCar.Quantity--;
+                await UpdateLocationCarAsync(locationCar);
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task ReturnCarAsync(int locationId, int carId)
+        {
+            var locationCar = await _locationCarRepository.GetByLocationIdAndCarIdAsync(locationId, carId);
+            try
+            {
+                if (locationCar == null)
+                {
+                    LocationCarDto newLocationCar = new() { LocationId = locationId, CarId = carId, Quantity = 1 };
+                    await AddLocationCarAsync(newLocationCar);
+                }
+                else
+                {
+                    locationCar.Quantity++;
+                    await UpdateLocationCarAsync(_mapper.Map<LocationCarDto>(locationCar));
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
