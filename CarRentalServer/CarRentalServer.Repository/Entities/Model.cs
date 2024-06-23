@@ -15,6 +15,7 @@ namespace CarRentalServer.Repository.Entities
         public int CarTypeId { get; set; }
         public string Name { get; set; }
         public int SeatsNumber { get; set; }
+        public string ImageUrl { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual CarType CarType { get; set; }

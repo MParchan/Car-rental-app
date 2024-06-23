@@ -15,6 +15,10 @@ namespace CarRentalServer.Service.DTOs
         public int ModelId { get; set; }
 
         [Required]
+        [StringLength(50, ErrorMessage = "Field {0} must be up to {1} characters long.")]
+        public string Version { get; set; }
+
+        [Required]
         [Range(0.01, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public decimal PricePerDay { get; set; }
 

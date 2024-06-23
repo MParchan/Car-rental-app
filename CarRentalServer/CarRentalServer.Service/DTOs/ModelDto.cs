@@ -26,6 +26,9 @@ namespace CarRentalServer.Service.DTOs
         [Range(1, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public int SeatsNumber { get; set; }
 
+        [Required]
+        public string ImageUrl { get; set; }
+
         public virtual Brand Brand { get; set; }
         public virtual CarType CarType { get; set; }
     }

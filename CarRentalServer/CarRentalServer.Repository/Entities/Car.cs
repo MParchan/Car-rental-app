@@ -13,6 +13,7 @@ namespace CarRentalServer.Repository.Entities
         [Key]
         public int CarId { get; set; }
         public int ModelId { get; set; }
+        public string Version { get; set; }
         [Precision(18, 2)]
         public decimal PricePerDay { get; set; }
         public int ProductionYear { get; set; }

@@ -10,6 +10,7 @@ namespace CarRentalServer.API.ViewModels
         public int CarTypeId { get; set; }
         public string Name { get; set; }
         public int SeatsNumber { get; set; }
+        public string ImageUrl { get; set; }
         public Brand Brand { get; set; }
         public CarType CarType { get; set; }
     }
@@ -30,6 +31,9 @@ namespace CarRentalServer.API.ViewModels
         [Required(ErrorMessage = "Model {0} is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public int SeatsNumber { get; set; }
+
+        [Required(ErrorMessage = "Model {0} is required.")]
+        public string ImageUrl { get; set; }
     }
 
     public class ModelViewModelPut
@@ -50,5 +54,8 @@ namespace CarRentalServer.API.ViewModels
         [Required(ErrorMessage = "Model {0} is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Value for {0} must be positive.")]
         public int SeatsNumber { get; set; }
+
+        [Required(ErrorMessage = "Model {0} is required.")]
+        public string ImageUrl { get; set; }
     }
 }
