@@ -1,5 +1,4 @@
-﻿using CarRentalServer.Repository.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalServer.API.ViewModels
 {
@@ -11,8 +10,8 @@ namespace CarRentalServer.API.ViewModels
         public string Name { get; set; }
         public int SeatsNumber { get; set; }
         public string ImageUrl { get; set; }
-        public Brand Brand { get; set; }
-        public CarType CarType { get; set; }
+        public BrandViewModelGet Brand { get; set; }
+        public CarTypeViewModelGet CarType { get; set; }
     }
 
     public class ModelViewModelPost

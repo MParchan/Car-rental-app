@@ -1,5 +1,4 @@
-﻿using CarRentalServer.Repository.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace CarRentalServer.Service.DTOs
         [Required]
         public string ImageUrl { get; set; }
 
-        public virtual Brand Brand { get; set; }
-        public virtual CarType CarType { get; set; }
+        public virtual BrandDto Brand { get; set; }
+        public virtual CarTypeDto CarType { get; set; }
     }
 }

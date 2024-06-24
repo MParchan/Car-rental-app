@@ -1,5 +1,4 @@
-﻿using CarRentalServer.Repository.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,6 +23,6 @@ namespace CarRentalServer.Service.DTOs
         [Required]
         public byte[] PasswordSalt { get; set; }
 
-        public virtual Role Role { get; set; }
+        public virtual RoleDto Role { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 1,
                     Name = "Model 3",
                     SeatsNumber = 5,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160739/TeslaModel3_kafjej.png"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_16na9/v1719160739/TeslaModel3_kafjej.png"
                 },
                 new Model
                 {
@@ -95,7 +95,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 2,
                     Name = "Model S",
                     SeatsNumber = 5,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160741/TeslaModelS_qtgkoa.png"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_16na9/v1719160741/TeslaModelS_qtgkoa.png"
                 },
                 new Model
                 {
@@ -103,7 +103,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 3,
                     Name = "Model Y",
                     SeatsNumber = 7,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160739/TeslaModelY_kkmgu1.jpg"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_16na9/v1719160739/TeslaModelY_kkmgu1.jpg"
                 },
                 new Model
                 {
@@ -111,7 +111,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 3,
                     Name = "Model X",
                     SeatsNumber = 7,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160741/TeslaModelX_eyanpx.png"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_16na9/v1719160741/TeslaModelX_eyanpx.png"
                 },
                 new Model
                 {
@@ -119,7 +119,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 4,
                     Name = "Cybertruck",
                     SeatsNumber = 5,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160739/TeslaCybertruck_ttfbfz.jpg"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_TeslaCybertruck/v1719160739/TeslaCybertruck_ttfbfz.jpg"
                 },
                 new Model
                 {
@@ -127,7 +127,7 @@ namespace CarRentalServer.Repository.Data
                     CarTypeId = 5,
                     Name = "Roadster",
                     SeatsNumber = 4,
-                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/v1719160739/TeslaRoadster_z2wkje.jpg"
+                    ImageUrl = "https://res.cloudinary.com/dl9iq9r8m/image/upload/t_16na9/v1719160739/TeslaRoadster_z2wkje.jpg"
                 },
             };
             foreach (Model model in models)
