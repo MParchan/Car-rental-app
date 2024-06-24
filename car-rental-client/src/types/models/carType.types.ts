@@ -1,4 +1,4 @@
 export type CarType = {
-    CarTypeId: number;
-    Name: string;
+    carTypeId: number;
+    name: string;
 };

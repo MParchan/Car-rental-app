@@ -1,11 +1,11 @@
-import { Car } from "./Car.types";
+import { Car } from "./car.types";
 import { Location } from "./location.types";
 
 export type LocationCar = {
-    LocationCarId: number;
-    LocationId: number;
-    CarId: number;
-    Quantity: number;
-    Location?: Location;
-    Car?: Car;
+    locationCarId: number;
+    locationId: number;
+    carId: number;
+    quantity: number;
+    location?: Location;
+    car?: Car;
 };

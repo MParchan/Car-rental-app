@@ -1,17 +1,17 @@
-import { Car } from "./Car.types";
+import { Car } from "./car.types";
 import { Location } from "./location.types";
 
 export type Reservation = {
-    ReservationId: number;
-    CarId: number;
-    UserEmail: string;
-    RentalLocationId: number;
-    ReturnLocationId: number;
-    StartDate: Date;
-    EndDate: Date;
-    RentPrice: number;
-    Status: "Pending" | "Started" | "Cancelled" | "Completed";
-    Car?: Car;
-    RentalLocation?: Location;
-    ReturnLocation?: Location;
+    reservationId: number;
+    carId: number;
+    userEmail: string;
+    rentalLocationId: number;
+    returnLocationId: number;
+    startDate: Date;
+    endDate: Date;
+    rentPrice: number;
+    status: "Pending" | "Started" | "Cancelled" | "Completed";
+    car?: Car;
+    rentalLocation?: Location;
+    returnLocation?: Location;
 };
