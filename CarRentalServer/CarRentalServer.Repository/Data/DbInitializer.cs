@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,11 +18,43 @@ namespace CarRentalServer.Repository.Data
             var roles = new Role[]
             {
                 new Role{ Name = "Admin" },
+                new Role{ Name = "Manager" },
                 new Role{ Name = "User" }
             };
             foreach (Role role in roles)
             {
                 context.Roles.Add(role);
+            }
+            context.SaveChanges();
+
+            var userHMAC = new HMACSHA512();
+            var users = new User[]
+            {
+                new User
+                {
+                    Email="admin@admin.com",
+                    RoleId = 1,
+                    PasswordHash=userHMAC.ComputeHash(Encoding.UTF8.GetBytes("Admin1234")),
+                    PasswordSalt = userHMAC.Key
+                },
+                new User
+                {
+                    Email="manager@manager.com",
+                    RoleId = 2,
+                    PasswordHash=userHMAC.ComputeHash(Encoding.UTF8.GetBytes("Manager1234")),
+                    PasswordSalt = userHMAC.Key
+                },
+                new User
+                {
+                    Email="user@user.com",
+                    RoleId = 3,
+                    PasswordHash=userHMAC.ComputeHash(Encoding.UTF8.GetBytes("User1234")),
+                    PasswordSalt = userHMAC.Key
+                }
+            };
+            foreach (User u in users)
+            {
+                context.Users.Add(u);
             }
             context.SaveChanges();
 

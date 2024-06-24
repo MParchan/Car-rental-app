@@ -3,6 +3,7 @@ using CarRentalServer.API.ViewModels;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.LocationCarServis;
 using CarRentalServer.Service.Services.ReservationService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace CarRentalServer.API.Controllers
 {
     [Route("api/reservations")]
     [ApiController]
+    [Authorize]
     public class ReservationController : ControllerBase
     {
         private readonly IReservationService _reservationService;
@@ -64,6 +66,7 @@ namespace CarRentalServer.API.Controllers
 
         // PUT: api/reservations/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> UpdateReservation(int id, ReservationViewModelPut reservation)
         {
             try
@@ -88,6 +91,7 @@ namespace CarRentalServer.API.Controllers
 
         // DELETE: api/reservations/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
             try
@@ -103,6 +107,7 @@ namespace CarRentalServer.API.Controllers
 
         // PATCH: api/reservations/{id}/start-resrvation
         [HttpPatch("{id}/start-resrvation")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> StartReservation(int id)
         {
             try
@@ -122,6 +127,7 @@ namespace CarRentalServer.API.Controllers
 
         // PATCH: api/reservations/{id}/end-resrvation
         [HttpPatch("{id}/end-resrvation")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> EndReservation(int id)
         {
             try

@@ -18,12 +18,12 @@ namespace CarRentalServer.Repository.Repositories.UserRepository
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+            return await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
         public async Task<int> GetUserIdByEmailAsync(string email)
         {
-            return await _context.Users.Where(u => u.Email.Equals(email)).Select(u => u.UserId).FirstOrDefaultAsync();
+            return await _context.Users.Include(u => u.Role).Where(u => u.Email.Equals(email)).Select(u => u.UserId).FirstOrDefaultAsync();
         }
     }
 }

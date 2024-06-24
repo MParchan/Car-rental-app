@@ -1,41 +1,42 @@
 ﻿using AutoMapper;
 using CarRentalServer.API.ViewModels;
 using CarRentalServer.Service.DTOs;
-using CarRentalServer.Service.Services.BrandService;
+using CarRentalServer.Service.Services.RoleService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalServer.API.Controllers
 {
-    [Route("api/brands")]
+    [Route("api/roles")]
     [ApiController]
-    public class BrandController: ControllerBase
+    [Authorize(Roles = "Admin")]
+    public class RoleController : ControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly IRoleService _roleSrvice;
         private readonly IMapper _mapper;
-        public BrandController(IBrandService brandService, IMapper mapper)
+        public RoleController(IRoleService roleSrvice, IMapper mapper)
         {
-            _brandService = brandService;
+            _roleSrvice = roleSrvice;
             _mapper = mapper;
         }
 
-        // GET: api/brands
+        // GET: api/roles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BrandViewModelGet>>> GetAllBrands()
+        public async Task<ActionResult<IEnumerable<RoleViewModelGet>>> GetAllRoles()
         {
-            var brands = await _brandService.GetAllBrandsAsync();
-            return Ok(_mapper.Map<List<BrandViewModelGet>>(brands));
+            var roles = await _roleSrvice.GetAllRolesAsync();
+            return Ok(_mapper.Map<List<RoleViewModelGet>>(roles));
         }
 
-        // GET: api/brands/{id}
+        // GET: api/roles/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<BrandViewModelGet>> GetBrandById(int id)
+        public async Task<ActionResult<RoleViewModelGet>> GetRoleById(int id)
         {
             try
             {
-                var brand = await _brandService.GetBrandByIdAsync(id);
-                return Ok(_mapper.Map<BrandViewModelGet>(brand));
+                var role = await _roleSrvice.GetRoleByIdAsync(id);
+                return Ok(_mapper.Map<RoleViewModelGet>(role));
             }
             catch (KeyNotFoundException ex)
             {
@@ -43,15 +44,14 @@ namespace CarRentalServer.API.Controllers
             }
         }
 
-        // POST: api/brands
+        // POST: api/roles
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<ActionResult<BrandViewModelGet>> AddBrand(BrandViewModelPost brand)
+        public async Task<ActionResult<RoleViewModelGet>> AddRole(RoleViewModelPost role)
         {
             try
             {
-                var createdBrand = await _brandService.AddBrandAsync(_mapper.Map<BrandDto>(brand));
-                return CreatedAtAction(nameof(GetBrandById), new { id = createdBrand.BrandId }, createdBrand);
+                var createdRole = await _roleSrvice.AddRoleAsync(_mapper.Map<RoleDto>(role));
+                return CreatedAtAction(nameof(GetRoleById), new { id = createdRole.RoleId }, createdRole);
             }
             catch (ValidationException ex)
             {
@@ -59,18 +59,17 @@ namespace CarRentalServer.API.Controllers
             }
         }
 
-        // PUT: api/brands/{id}
+        // PUT: api/roles/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> UpdateBrand(int id, BrandViewModelPut brand)
+        public async Task<IActionResult> UpdateRole(int id, RoleViewModelPut role)
         {
             try
             {
-                if (id != brand.BrandId)
+                if (id != role.RoleId)
                 {
                     return BadRequest(new { ErrorMessage = "Invalid Id" });
                 }
-                await _brandService.UpdateBrandAsync(_mapper.Map<BrandDto>(brand));
+                await _roleSrvice.UpdateRoleAsync(_mapper.Map<RoleDto>(role));
 
                 return NoContent();
             }
@@ -84,14 +83,13 @@ namespace CarRentalServer.API.Controllers
             }
         }
 
-        // DELETE: api/brands/{id}
+        // DELETE: api/roles/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> DeleteBrand(int id)
+        public async Task<IActionResult> DeleteRole(int id)
         {
             try
             {
-                await _brandService.DeleteBrandAsync(id);
+                await _roleSrvice.DeleteRoleAsync(id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)

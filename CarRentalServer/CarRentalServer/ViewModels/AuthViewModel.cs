@@ -5,9 +5,12 @@ namespace CarRentalServer.API.ViewModels
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "{0} is required.")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
         public string Email { get; set; }
+
         [Required(ErrorMessage = "{0} is required.")]
         public string Password { get; set; }
+
         [Required(ErrorMessage = "{0} is required.")]
         public string ConfirmPassword { get; set; }
     }
@@ -15,7 +18,9 @@ namespace CarRentalServer.API.ViewModels
     public class LoginViewModel
     {
         [Required(ErrorMessage = "{0} is required.")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
         public string Email { get; set; }
+
         [Required(ErrorMessage = "{0} is required.")]
         public string Password { get; set; }
     }

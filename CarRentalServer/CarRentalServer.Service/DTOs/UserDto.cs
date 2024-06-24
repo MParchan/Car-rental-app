@@ -16,6 +16,7 @@ namespace CarRentalServer.Service.DTOs
         public int RoleId { get; set; }
 
         [Required]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
         public string Email { get; set; }
 
         [Required]

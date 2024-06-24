@@ -1,5 +1,6 @@
 ﻿using CarRentalServer.API.ViewModels;
 using CarRentalServer.Service.Services.AuthService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,6 +39,22 @@ namespace CarRentalServer.API.Controllers
             {
                 var accessToken = await _authService.Login(login.Email, login.Password);
                 return Ok(accessToken);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { ErrorMessage = ex.Message });
+            }
+        }
+
+        //POST: api/auth/create-manager
+        [HttpPost("create-manager")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateManager(RegisterViewModel register)
+        {
+            try
+            {
+                (string email, string password) = await _authService.CreateManager(register.Email, register.Password, register.ConfirmPassword);
+                return Ok(new { email, password });
             }
             catch (ValidationException ex)
             {

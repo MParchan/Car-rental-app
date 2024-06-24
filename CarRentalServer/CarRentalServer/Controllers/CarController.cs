@@ -2,6 +2,7 @@
 using CarRentalServer.API.ViewModels;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -44,6 +45,7 @@ namespace CarRentalServer.API.Controllers
 
         // POST: api/cars
         [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<ActionResult<CarViewModelPost>> AddCar(CarViewModelPost car)
         {
             try
@@ -63,6 +65,7 @@ namespace CarRentalServer.API.Controllers
 
         // PUT: api/cars/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> UpdateCar(int id, CarViewModelPut car)
         {
             try
@@ -87,6 +90,7 @@ namespace CarRentalServer.API.Controllers
 
         // DELETE: api/cars/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteCar(int id)
         {
             try

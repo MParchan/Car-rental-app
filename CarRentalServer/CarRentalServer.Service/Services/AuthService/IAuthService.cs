@@ -12,5 +12,6 @@ namespace CarRentalServer.Service.Services.AuthService
     {
         Task Register(string email, string password, string confirmPassword);
         Task<string> Login(string email, string password);
+        Task<(string Email, string Password)> CreateManager(string email, string password, string confirmPassword);
     }
 }

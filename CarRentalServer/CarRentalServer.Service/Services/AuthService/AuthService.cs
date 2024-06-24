@@ -70,7 +70,37 @@ namespace CarRentalServer.Service.Services.AuthService
                 throw new ValidationException("Email or password is not valid.");
             }
 
-            return CreateToken(email);
+            return CreateToken(email, existingUser.Role.Name);
+        }
+
+        public async Task<(string Email, string Password)> CreateManager(string email, string password, string confirmPassword)
+        {
+            var existingUser = await _userRepository.GetUserByEmailAsync(email);
+            if (existingUser != null)
+            {
+                throw new ValidationException("Email already in use.");
+            }
+            if (password.Length < 8)
+            {
+                throw new ValidationException("Password must be at least 8 characters long.");
+            }
+            if (!password.Equals(confirmPassword))
+            {
+                throw new ValidationException("Password and confirm password is not the same.");
+            }
+
+            int roleId = await _roleRepository.GetRoleIdByNameAsync("Manager");
+            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            UserDto user = new() { RoleId = roleId, Email = email, PasswordHash = passwordHash, PasswordSalt = passwordSalt };
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(user, serviceProvider: null, items: null);
+            if (!Validator.TryValidateObject(user, validationContext, validationResults, true))
+            {
+                throw new ValidationException(string.Join(", ", validationResults.Select(vr => vr.ErrorMessage)));
+            }
+
+            await _userRepository.AddAsync(_mapper.Map<User>(user));
+            return (email, password);
         }
 
 
@@ -81,18 +111,19 @@ namespace CarRentalServer.Service.Services.AuthService
             passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
-        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using var hmac = new HMACSHA512(passwordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             return computedHash.SequenceEqual(passwordHash);
         }
 
-        private string CreateToken(string email)
+        private string CreateToken(string email, string roleName)
         {
             List<Claim> claims = new()
             {
-                new Claim(ClaimTypes.Email, email)
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Role, roleName)
             };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
