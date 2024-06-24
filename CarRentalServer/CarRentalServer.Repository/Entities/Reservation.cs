@@ -13,6 +13,7 @@ namespace CarRentalServer.Repository.Entities
         [Key]
         public int ReservationId { get; set; }
         public int CarId { get; set; }
+        public string UserEmail { get; set; }
         public int RentalLocationId { get; set; }
         public int ReturnLocationId { get; set; }
         public DateTime StartDate { get; set; }

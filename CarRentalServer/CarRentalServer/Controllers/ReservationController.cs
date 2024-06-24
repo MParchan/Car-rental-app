@@ -6,6 +6,7 @@ using CarRentalServer.Service.Services.ReservationService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace CarRentalServer.API.Controllers
 {
@@ -26,8 +27,20 @@ namespace CarRentalServer.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReservationViewModelGet>>> GetAllReservations()
         {
-            var reservations = await _reservationService.GetAllReservationsAsync();
-            return Ok(_mapper.Map<List<ReservationViewModelGet>>(reservations));
+            try
+            {
+                var userEmail = User.Claims.Single(c => c.Type == ClaimTypes.Email).Value;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return Unauthorized(new { ErrorMessage = "Email not found in token." });
+                }
+                var reservations = await _reservationService.GetAllReservationsAsync(userEmail);
+                return Ok(_mapper.Map<List<ReservationViewModelGet>>(reservations));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
 
         // GET: api/reservations/{id}
@@ -36,12 +49,21 @@ namespace CarRentalServer.API.Controllers
         {
             try
             {
-                var reservation = await _reservationService.GetReservationByIdAsync(id);
+                var userEmail = User.Claims.Single(c => c.Type == ClaimTypes.Email).Value;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return Unauthorized(new { ErrorMessage = "Email not found in token." });
+                }
+                var reservation = await _reservationService.GetReservationByIdAsync(userEmail, id);
                 return Ok(_mapper.Map<ReservationViewModelGet>(reservation));
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
         }
 
@@ -51,7 +73,13 @@ namespace CarRentalServer.API.Controllers
         {
             try
             {
-                var createdReservation = await _reservationService.AddReservationAsync(_mapper.Map<ReservationDto>(reservation));
+                var userEmail = User.Claims.Single(c => c.Type == ClaimTypes.Email).Value;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return Unauthorized(new { ErrorMessage = "Email not found in token." });
+                }
+                
+                var createdReservation = await _reservationService.AddReservationAsync(userEmail, _mapper.Map<ReservationDto>(reservation));
                 return CreatedAtAction(nameof(GetReservationById), new { id = createdReservation.ReservationId }, createdReservation);
             }
             catch (KeyNotFoundException ex)
@@ -61,6 +89,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
         }
 
@@ -86,6 +118,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
             }
         }
 

@@ -9,9 +9,9 @@ namespace CarRentalServer.Service.Services.ReservationService
 {
     public interface IReservationService
     {
-        Task<IEnumerable<ReservationDto>> GetAllReservationsAsync();
-        Task<ReservationDto> GetReservationByIdAsync(int id);
-        Task<ReservationDto> AddReservationAsync(ReservationDto reservation);
+        Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string userEmail);
+        Task<ReservationDto> GetReservationByIdAsync(string userEmail, int id);
+        Task<ReservationDto> AddReservationAsync(string userEmail, ReservationDto reservation);
         Task UpdateReservationAsync(ReservationDto reservation);
         Task DeleteReservationAsync(int id);
         Task StartReservationAsync(int id);

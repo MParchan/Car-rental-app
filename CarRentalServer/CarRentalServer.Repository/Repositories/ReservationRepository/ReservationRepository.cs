@@ -29,6 +29,20 @@ namespace CarRentalServer.Repository.Repositories.ReservationRepository
                 .Include(r => r.ReturnLocation)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Reservation>> GetAllUserReservationsWithIncludesAsync(string userEmail)
+        {
+            return await _context.Reservations
+                .Include(r => r.Car)
+                    .ThenInclude(c => c.Model)
+                        .ThenInclude(m => m.Brand)
+                .Include(r => r.Car)
+                    .ThenInclude(c => c.Model)
+                        .ThenInclude(m => m.CarType)
+                .Include(r => r.RentalLocation)
+                .Include(r => r.ReturnLocation)
+                .Where(r => r.UserEmail.Equals(userEmail))
+                .ToListAsync();
+        }
         public async Task<Reservation> GetByIdWithIncludesAsync(int id)
         {
             return await _context.Reservations

@@ -7,6 +7,8 @@ namespace CarRentalServer.API.ViewModels
     {
         public int ReservationId { get; set; }
         public int CarId { get; set; }
+        [DataType(DataType.EmailAddress)]
+        public string UserEmail { get; set; }
         public int RentalLocationId { get; set; }
         public int ReturnLocationId { get; set; }
 
@@ -52,6 +54,10 @@ namespace CarRentalServer.API.ViewModels
 
         [Required(ErrorMessage = "Reservation {0} is required.")]
         public int CarId { get; set; }
+
+        [Required(ErrorMessage = "Reservation {0} is required.")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
+        public string UserEmail { get; set; }
 
         [Required(ErrorMessage = "Reservation {0} is required.")]
         public int RentalLocationId { get; set; }

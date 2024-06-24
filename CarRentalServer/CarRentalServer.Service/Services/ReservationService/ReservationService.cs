@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarRentalServer.Repository.Entities;
 using CarRentalServer.Repository.Repositories.ReservationRepository;
+using CarRentalServer.Repository.Repositories.UserRepository;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarService;
 using CarRentalServer.Service.Services.LocationCarServis;
@@ -20,34 +21,59 @@ namespace CarRentalServer.Service.Services.ReservationService
         private readonly ICarService _carService;
         private readonly ILocationServis _locationService;
         private readonly ILocationCarServis _locationCarServis;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public ReservationService(IReservationRepository reservationRepository, ICarService carService, ILocationServis locationServis, ILocationCarServis locationCarServis, IMapper mapper)
+        public ReservationService(IReservationRepository reservationRepository, ICarService carService, ILocationServis locationServis, ILocationCarServis locationCarServis, IUserRepository userRepository, IMapper mapper)
         {
             _reservationRepository = reservationRepository;
             _carService = carService;
             _locationService = locationServis;
             _locationCarServis = locationCarServis;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync()
+        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string userEmail)
         {
-            return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllWithIncludesAsync());
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            if (user.Role.Name.Equals("Admin") || user.Role.Name.Equals("Manager"))
+            {
+                return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllWithIncludesAsync());
+            }
+            return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllUserReservationsWithIncludesAsync(userEmail));
         }
 
-        public async Task<ReservationDto> GetReservationByIdAsync(int id)
+        public async Task<ReservationDto> GetReservationByIdAsync(string userEmail, int id)
         {
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
             var reservation = await _reservationRepository.GetByIdWithIncludesAsync(id);
             if (reservation == null)
             {
                 throw new KeyNotFoundException("Reservation not found.");
             }
+            if (!user.Role.Name.Equals("Admin") && !user.Role.Name.Equals("Manager") && !userEmail.Equals(reservation.UserEmail))
+            {
+                throw new UnauthorizedAccessException();
+            }
 
             return _mapper.Map<ReservationDto>(reservation);
         }
 
-        public async Task<ReservationDto> AddReservationAsync(ReservationDto reservation)
+        public async Task<ReservationDto> AddReservationAsync(string userEmail, ReservationDto reservation)
         {
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
             decimal pricePerDay = 0;
             try
             {
@@ -87,6 +113,7 @@ namespace CarRentalServer.Service.Services.ReservationService
                 reservation.RentPrice *= 0.9m;
             }
             reservation.RentPrice = Math.Round(reservation.RentPrice, 2);
+            reservation.UserEmail = userEmail;
 
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(reservation, serviceProvider: null, items: null);
@@ -97,7 +124,7 @@ namespace CarRentalServer.Service.Services.ReservationService
 
             var reservationEntity = _mapper.Map<Reservation>(reservation);
             await _reservationRepository.AddAsync(reservationEntity);
-            return await GetReservationByIdAsync(reservationEntity.ReservationId);
+            return await GetReservationByIdAsync(reservationEntity.UserEmail, reservationEntity.ReservationId);
         }
 
         public async Task UpdateReservationAsync(ReservationDto reservation)
@@ -106,6 +133,12 @@ namespace CarRentalServer.Service.Services.ReservationService
             if (existingReservation == null)
             {
                 throw new KeyNotFoundException("Reservation not found.");
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(reservation.UserEmail);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
             }
 
             decimal pricePerDay = 0;

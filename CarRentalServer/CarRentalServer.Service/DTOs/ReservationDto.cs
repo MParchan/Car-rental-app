@@ -17,6 +17,9 @@ namespace CarRentalServer.Service.DTOs
         public int CarId { get; set; }
 
         [Required]
+        public string UserEmail { get; set; }
+
+        [Required]
         public int RentalLocationId { get; set; }
 
         [Required]
