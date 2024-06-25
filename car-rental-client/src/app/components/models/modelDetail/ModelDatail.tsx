@@ -1,10 +1,27 @@
 import React from "react";
 import { Model } from "../../../../types/models/model.types";
+import AvailableCars from "../availableCars.tsx/AvailableCars";
 
 export default function ModelDatail({ model }: { model: Model }) {
   return (
     <div>
-      <div className="border rounded-lg p-2 w-64"> {model.name}</div>
+      <div className="lg:flex">
+        <div className="flex-1">
+          <div className="text-3xl my-6">
+            {model.brand?.name} {model.name}
+          </div>
+          <div className="text-xl my-2">Body type: {model.carType?.name}</div>
+          <div className="text-xl my-2">Number of seats: {model.seatsNumber}</div>
+        </div>
+        <div className="justify-center lg:w-[700px]">
+          <img
+            src={model.imageUrl}
+            className="rounded-lg"
+            alt={`${model.brand?.name} ${model.name} Logo`}
+          />
+        </div>
+      </div>
+      <AvailableCars model={model} />
     </div>
   );
 }

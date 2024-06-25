@@ -1,4 +1,5 @@
 import { Brand } from "./brand.types";
+import { Car } from "./car.types";
 import { CarType } from "./carType.types";
 
 export type Model = {
@@ -10,4 +11,5 @@ export type Model = {
     imageUrl: string;
     brand?: Brand;
     carType?: CarType;
+    cars?: Car[];
 };

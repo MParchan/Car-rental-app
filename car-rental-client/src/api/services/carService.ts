@@ -11,6 +11,23 @@ export const getCars = async () => {
     }
 };
 
+export const getAvailableCars = async (
+    modelId: number,
+    locationId: number,
+    startDate: string,
+    endDate: string
+) => {
+    try {
+        const response = await axiosInstance.get(
+            `/cars/available?modelId=${modelId}&locationId=${locationId}&startDate=${startDate}&endDate=${endDate}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching available cars:", error);
+        throw error;
+    }
+};
+
 export const getCar = async (carId: number) => {
     try {
         const response = await axiosInstance.get(`/cars/${carId}`);
