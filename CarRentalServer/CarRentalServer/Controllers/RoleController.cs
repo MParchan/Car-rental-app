@@ -25,8 +25,15 @@ namespace CarRentalServer.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleViewModelGet>>> GetAllRoles()
         {
-            var roles = await _roleSrvice.GetAllRolesAsync();
-            return Ok(_mapper.Map<List<RoleViewModelGet>>(roles));
+            try
+            {
+                var roles = await _roleSrvice.GetAllRolesAsync();
+                return Ok(_mapper.Map<List<RoleViewModelGet>>(roles));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // GET: api/roles/{id}
@@ -42,6 +49,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return NotFound(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // POST: api/roles
@@ -56,6 +67,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -81,6 +96,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // DELETE: api/roles/{id}
@@ -95,6 +114,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }

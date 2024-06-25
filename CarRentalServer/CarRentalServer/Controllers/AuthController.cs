@@ -29,6 +29,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         //POST: api/auth/login
@@ -43,6 +47,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -59,6 +67,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }

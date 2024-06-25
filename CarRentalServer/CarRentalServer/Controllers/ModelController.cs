@@ -25,8 +25,15 @@ namespace CarRentalServer.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ModelViewModelGet>>> GetAllModels()
         {
-            var models = await _modelService.GetAllModelsAsync();
-            return Ok(_mapper.Map<List<ModelViewModelGet>>(models));
+            try
+            {
+                var models = await _modelService.GetAllModelsAsync();
+                return Ok(_mapper.Map<List<ModelViewModelGet>>(models));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // GET: api/models/{id}
@@ -41,6 +48,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -61,6 +72,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -87,6 +102,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // DELETE: api/models/{id}
@@ -102,6 +121,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }

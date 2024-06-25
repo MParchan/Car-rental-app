@@ -41,6 +41,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return Unauthorized();
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // GET: api/reservations/{id}
@@ -64,6 +68,10 @@ namespace CarRentalServer.API.Controllers
             catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -94,6 +102,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return Unauthorized();
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // PUT: api/reservations/{id}
@@ -123,6 +135,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return Unauthorized();
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // DELETE: api/reservations/{id}
@@ -138,6 +154,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -159,6 +179,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // PATCH: api/reservations/{id}/end-resrvation
@@ -179,6 +203,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // PATCH: api/reservations/{id}/cancel-resrvation
@@ -197,6 +225,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }

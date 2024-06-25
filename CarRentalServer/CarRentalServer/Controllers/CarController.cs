@@ -24,8 +24,15 @@ namespace CarRentalServer.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CarViewModelGet>>> GetAllCars()
         {
-            var cars = await _carService.GetAllCarsAsync();
-            return Ok(_mapper.Map<List<CarViewModelGet>>(cars));
+            try
+            {
+                var cars = await _carService.GetAllCarsAsync();
+                return Ok(_mapper.Map<List<CarViewModelGet>>(cars));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // GET: api/cars/{id}
@@ -40,6 +47,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -60,6 +71,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -86,6 +101,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // DELETE: api/cars/{id}
@@ -101,6 +120,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }

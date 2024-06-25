@@ -24,8 +24,15 @@ namespace CarRentalServer.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationCarViewModelGet>>> GetAllLocationCars()
         {
-            var locationCars = await _locationCarService.GetAllLocationCarsAsync();
-            return Ok(_mapper.Map<List<LocationCarViewModelGet>>(locationCars));
+            try
+            {
+                var locationCars = await _locationCarService.GetAllLocationCarsAsync();
+                return Ok(_mapper.Map<List<LocationCarViewModelGet>>(locationCars));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // GET: api/location-cars/{id}
@@ -40,6 +47,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -60,6 +71,10 @@ namespace CarRentalServer.API.Controllers
             catch (ValidationException ex)
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
 
@@ -86,6 +101,10 @@ namespace CarRentalServer.API.Controllers
             {
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
         }
 
         // DELETE: api/location-cars/{id}
@@ -101,6 +120,10 @@ namespace CarRentalServer.API.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
             }
         }
     }
