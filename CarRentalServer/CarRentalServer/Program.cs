@@ -56,7 +56,7 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ILocationServis, LocationServis>();
 builder.Services.AddScoped<ILocationCarRepository, LocationCarRepository>();
-builder.Services.AddScoped<ILocationCarServis, LocationCarService>();
+builder.Services.AddScoped<ILocationCarService, LocationCarService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IModelRepository, ModelRepository>();
 builder.Services.AddScoped<IModelService, ModelService>();

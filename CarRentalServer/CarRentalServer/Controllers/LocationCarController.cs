@@ -12,9 +12,9 @@ namespace CarRentalServer.API.Controllers
     [ApiController]
     public class LocationCarController: ControllerBase
     {
-        private readonly ILocationCarServis _locationCarService;
+        private readonly ILocationCarService _locationCarService;
         private readonly IMapper _mapper;
-        public LocationCarController(ILocationCarServis locationCarService, IMapper mapper)
+        public LocationCarController(ILocationCarService locationCarService, IMapper mapper)
         {
             _locationCarService = locationCarService;
             _mapper = mapper;

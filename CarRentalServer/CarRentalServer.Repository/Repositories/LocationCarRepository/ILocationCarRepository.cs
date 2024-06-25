@@ -1,5 +1,6 @@
 ﻿using CarRentalServer.Repository.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace CarRentalServer.Repository.Repositories.LocationCarRepository
         Task<LocationCar> GetByIdWithIncludesAsync(int id);
         Task<LocationCar> GetByIdNoTrackingAsync(int id);
         Task<LocationCar> GetByLocationIdAndCarIdAsync(int locationId, int carId);
+        Task<IEnumerable<LocationCar>> GetAllByLocationAndModelAsync(int locationId, int modelId);
     }
 }

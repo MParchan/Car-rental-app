@@ -2,6 +2,8 @@
 using CarRentalServer.API.ViewModels;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarService;
+using CarRentalServer.Service.Services.LocationCarServis;
+using CarRentalServer.Service.Services.ReservationService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -13,10 +15,14 @@ namespace CarRentalServer.API.Controllers
     public class CarController : ControllerBase
     {
         private readonly ICarService _carService;
+        private readonly ILocationCarService _locationCarService;
+        private readonly IReservationService _reservationService;
         private readonly IMapper _mapper;
-        public CarController(ICarService carService, IMapper mapper)
+        public CarController(ICarService carService, ILocationCarService locationCarService, IReservationService reservationService, IMapper mapper)
         {
             _carService = carService;
+            _locationCarService = locationCarService;
+            _reservationService = reservationService;
             _mapper = mapper;
         }
 
@@ -28,6 +34,32 @@ namespace CarRentalServer.API.Controllers
             {
                 var cars = await _carService.GetAllCarsAsync();
                 return Ok(_mapper.Map<List<CarViewModelGet>>(cars));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ErrorMessage = ex.Message });
+            }
+        }
+
+
+        // GET: api/cars/available
+        [HttpGet("available")]
+        public async Task<ActionResult<IEnumerable<CarQuantityViewModel>>> GetAvailableCars(
+            [FromQuery, Required] int modelId, [FromQuery, Required] int locationId, [FromQuery, Required] DateTime startDate, [FromQuery, Required] DateTime endDate)
+        {
+            try
+            {
+                var carsQuantity = await _locationCarService.GetLocationCarsByLocationIdAndModelId(locationId, modelId);
+                var availableCarsQuantity = await _reservationService.GetCarsQuantityWithoutPendingReservationAsync(carsQuantity, startDate, endDate);
+                return Ok(availableCarsQuantity);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ErrorMessage = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { ErrorMessage = ex.Message });
             }
             catch (Exception ex)
             {
@@ -125,6 +157,6 @@ namespace CarRentalServer.API.Controllers
             {
                 return StatusCode(500, new { ErrorMessage = ex.Message });
             }
-        }
+        }  
     }
 }

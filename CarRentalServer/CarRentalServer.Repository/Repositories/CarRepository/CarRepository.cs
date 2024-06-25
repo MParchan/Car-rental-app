@@ -23,6 +23,25 @@ namespace CarRentalServer.Repository.Repositories.CarRepository
                     .ThenInclude(model => model.Brand)
                 .Include(car => car.Model)
                     .ThenInclude(model => model.CarType)
+                .Select(car => new Car
+                {
+                    CarId = car.CarId,
+                    ModelId = car.ModelId,
+                    Version = car.Version,
+                    PricePerDay = car.PricePerDay,
+                    ProductionYear = car.ProductionYear,
+                    Horsepower = car.Horsepower,
+                    Range = car.Range,
+                    Model = new Model
+                    {
+                        ModelId = car.Model.ModelId,
+                        Name = car.Model.Name,
+                        SeatsNumber = car.Model.SeatsNumber,
+                        ImageUrl = car.Model.ImageUrl,
+                        Brand = car.Model.Brand,
+                        CarType = car.Model.CarType,
+                    }
+                })
                 .ToListAsync();
         }
         public async Task<Car> GetByIdWithIncludesAsync(int id)
@@ -32,6 +51,25 @@ namespace CarRentalServer.Repository.Repositories.CarRepository
                     .ThenInclude(model => model.Brand)
                 .Include(car => car.Model)
                     .ThenInclude(model => model.CarType)
+                .Select(car => new Car
+                {
+                    CarId = car.CarId,
+                    ModelId = car.ModelId,
+                    Version = car.Version,
+                    PricePerDay = car.PricePerDay,
+                    ProductionYear = car.ProductionYear,
+                    Horsepower = car.Horsepower,
+                    Range = car.Range,
+                    Model = new Model
+                    {
+                        ModelId = car.Model.ModelId,
+                        Name = car.Model.Name,
+                        SeatsNumber = car.Model.SeatsNumber,
+                        ImageUrl = car.Model.ImageUrl,
+                        Brand = car.Model.Brand,
+                        CarType = car.Model.CarType,
+                    }
+                })
                 .FirstOrDefaultAsync(car => car.CarId == id);
         }
         public async Task<Car> GetByIdNoTrackingAsync(int id)

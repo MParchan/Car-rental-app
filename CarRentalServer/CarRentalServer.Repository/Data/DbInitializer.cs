@@ -273,7 +273,7 @@ namespace CarRentalServer.Repository.Data
                 //Roadster
                 new Car
                 {
-                    ModelId = 5,
+                    ModelId = 6,
                     Version = "Tri Motor AWD",
                     PricePerDay = 129.99m,
                     ProductionYear = 2023,

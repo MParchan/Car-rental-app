@@ -41,5 +41,12 @@ namespace CarRentalServer.Repository.Repositories.LocationCarRepository
                 .AsNoTracking()
                 .FirstOrDefaultAsync(lc => lc.LocationId == locationId && lc.CarId == carId);
         }
+        public async Task<IEnumerable<LocationCar>> GetAllByLocationAndModelAsync(int locationId, int modelId)
+        {
+            return await _context.LocationCars
+                .Include(locationCar => locationCar.Car)
+                .Where(lc => lc.LocationId == locationId && lc.Car.ModelId == modelId)
+                .ToListAsync();
+        }
     }
 }

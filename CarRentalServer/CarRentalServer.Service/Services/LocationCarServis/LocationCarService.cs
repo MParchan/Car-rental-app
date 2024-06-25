@@ -4,6 +4,7 @@ using CarRentalServer.Repository.Repositories.LocationCarRepository;
 using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarService;
 using CarRentalServer.Service.Services.LocationServis;
+using CarRentalServer.Service.Services.ModelService;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,17 +14,19 @@ using System.Threading.Tasks;
 
 namespace CarRentalServer.Service.Services.LocationCarServis
 {
-    public class LocationCarService: ILocationCarServis
+    public class LocationCarService: ILocationCarService
     {
         private readonly ILocationCarRepository _locationCarRepository;
         private readonly ILocationServis _locationService;
         private readonly ICarService _carService;
+        private readonly IModelService _modelService;
         private readonly IMapper _mapper;
-        public LocationCarService(ILocationCarRepository locationCarRepository, ILocationServis locationService, ICarService carService,  IMapper mapper)
+        public LocationCarService(ILocationCarRepository locationCarRepository, ILocationServis locationService, ICarService carService, IModelService modelService, IMapper mapper)
         {
             _locationCarRepository = locationCarRepository;
             _locationService = locationService;
             _carService = carService;
+            _modelService = modelService;
             _mapper = mapper;
         }
 
@@ -32,6 +35,23 @@ namespace CarRentalServer.Service.Services.LocationCarServis
         {
             return _mapper.Map<List<LocationCarDto>>(await _locationCarRepository.GetAllWithIncludesAsync());
         }
+
+        public async Task<IEnumerable<LocationCarDto>> GetLocationCarsByLocationIdAndModelId(int locationId, int modelId )
+        {
+            try
+            {
+                await _modelService.GetModelByIdAsync(modelId);
+                await _locationService.GetLocationByIdAsync(locationId);
+            }
+            catch
+            {
+                throw;
+            }
+
+            var locationCars = await _locationCarRepository.GetAllByLocationAndModelAsync(locationId, modelId);
+            return _mapper.Map<List<LocationCarDto>>(locationCars);
+        }
+
         public async Task<LocationCarDto> GetLocationCarByIdAsync(int id)
         {
             var locationCar = await _locationCarRepository.GetByIdWithIncludesAsync(id);

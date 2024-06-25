@@ -20,10 +20,10 @@ namespace CarRentalServer.Service.Services.ReservationService
         private readonly IReservationRepository _reservationRepository;
         private readonly ICarService _carService;
         private readonly ILocationServis _locationService;
-        private readonly ILocationCarServis _locationCarServis;
+        private readonly ILocationCarService _locationCarServis;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public ReservationService(IReservationRepository reservationRepository, ICarService carService, ILocationServis locationServis, ILocationCarServis locationCarServis, IUserRepository userRepository, IMapper mapper)
+        public ReservationService(IReservationRepository reservationRepository, ICarService carService, ILocationServis locationServis, ILocationCarService locationCarServis, IUserRepository userRepository, IMapper mapper)
         {
             _reservationRepository = reservationRepository;
             _carService = carService;
@@ -45,6 +45,31 @@ namespace CarRentalServer.Service.Services.ReservationService
                 return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllWithIncludesAsync());
             }
             return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllUserReservationsWithIncludesAsync(userEmail));
+        }
+
+        public async Task<IEnumerable<CarQuantityDto>> GetCarsQuantityWithoutPendingReservationAsync(IEnumerable<LocationCarDto> carsQuantity, DateTime startDate, DateTime endDate)
+        {
+            if (startDate.Date < DateTime.Now.Date)
+            {
+                throw new ValidationException("You can't make reservations backwards.");
+            }
+            if (endDate.Date < startDate.Date)
+            {
+                throw new ValidationException("The end of the reservation cannot be earlier than the start.");
+            }
+            var carsQuantityDto = new List<CarQuantityDto>();
+            foreach (LocationCarDto car in carsQuantity)
+            {
+                var numberOfReservedCars = await _reservationRepository.NumberOfPendingReservations(car.LocationId, car.CarId, startDate, endDate);
+                var availableQuantity = car.Quantity - numberOfReservedCars;
+
+                carsQuantityDto.Add(new CarQuantityDto
+                {
+                    CarId = car.CarId,
+                    Quantity = availableQuantity
+                });
+            }
+            return carsQuantityDto;
         }
 
         public async Task<ReservationDto> GetReservationByIdAsync(string userEmail, int id)
