@@ -76,7 +76,7 @@ namespace CarRentalServer.Repository.Entities
                 entity.HasKey(c => c.CarId);
 
                 entity.HasOne(c => c.Model)
-                    .WithMany()
+                    .WithMany(m => m.Cars)
                     .HasForeignKey(c => c.ModelId)
                     .OnDelete(DeleteBehavior.Cascade);
             });

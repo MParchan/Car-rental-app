@@ -28,6 +28,26 @@ namespace CarRentalServer.Repository.Repositories.ModelRepository
             return await _context.Models
                 .Include(model => model.Brand)
                 .Include(model => model.CarType)
+                .Include(model => model.Cars)
+                .Select(m => new Model
+                {
+                    ModelId = m.ModelId,
+                    Name = m.Name,
+                    SeatsNumber = m.SeatsNumber,
+                    ImageUrl = m.ImageUrl,
+                    Brand = m.Brand,
+                    CarType = m.CarType,
+                    Cars = m.Cars.Select(c => new Car
+                    {
+                        CarId = c.CarId,
+                        Version = c.Version,
+                        PricePerDay = c.PricePerDay,
+                        ProductionYear = c.ProductionYear,
+                        Horsepower = c.Horsepower,
+                        Range = c.Range,
+                        ModelId = c.ModelId
+                    }).ToList()
+                })
                 .FirstOrDefaultAsync(model => model.ModelId == id);
         }
         public async Task<Model> GetByIdNoTrackingAsync(int id)

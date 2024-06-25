@@ -30,5 +30,6 @@ namespace CarRentalServer.Service.DTOs
 
         public virtual BrandDto Brand { get; set; }
         public virtual CarTypeDto CarType { get; set; }
+        public virtual ICollection<CarDto> Cars { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace CarRentalServer.API.ViewModels
         public string ImageUrl { get; set; }
         public BrandViewModelGet Brand { get; set; }
         public CarTypeViewModelGet CarType { get; set; }
+        public ICollection<CarViewModelGet> Cars { get; set; }
     }
 
     public class ModelViewModelPost

@@ -19,5 +19,6 @@ namespace CarRentalServer.Repository.Entities
 
         public virtual Brand Brand { get; set; }
         public virtual CarType CarType { get; set; }
+        public virtual ICollection<Car> Cars { get; set; }
     }
 }
