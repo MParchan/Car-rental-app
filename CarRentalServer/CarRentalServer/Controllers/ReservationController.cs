@@ -215,7 +215,7 @@ namespace CarRentalServer.API.Controllers
         {
             try
             {
-                await _reservationService.StartReservationAsync(id);
+                await _reservationService.CancelReservationAsync(id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
