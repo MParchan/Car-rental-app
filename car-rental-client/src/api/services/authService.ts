@@ -1,4 +1,5 @@
 import { axiosInstance, setAuthToken } from "../axios-config";
+import { jwtDecode } from "jwt-decode";
 
 export const register = async (credentials: {
     email: string;
@@ -6,7 +7,7 @@ export const register = async (credentials: {
     confirmPassword: string;
 }) => {
     try {
-        const response = await axiosInstance.post("/register", credentials);
+        const response = await axiosInstance.post("/auth/register", credentials);
         return response.data;
     } catch (error) {
         console.error("Error registration:", error);
@@ -16,8 +17,8 @@ export const register = async (credentials: {
 
 export const login = async (credentials: { email: string; password: string }) => {
     try {
-        const response = await axiosInstance.post("/login", credentials);
-        const { token } = response.data;
+        const response = await axiosInstance.post("/auth/login", credentials);
+        const token = response.data;
         localStorage.setItem("accessToken", token);
         setAuthToken(token);
         return response.data;
@@ -33,7 +34,7 @@ export const createManager = async (credentials: {
     confirmPassword: string;
 }) => {
     try {
-        const response = await axiosInstance.post("/create-manager", credentials);
+        const response = await axiosInstance.post("/auth/create-manager", credentials);
         return response.data;
     } catch (error) {
         console.error("Error creating manager:", error);
@@ -42,6 +43,28 @@ export const createManager = async (credentials: {
 };
 
 export const logout = () => {
-    localStorage.removeItem("accessToken");
     setAuthToken(undefined);
+};
+
+export const isAuthenticated = (): boolean => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        return false;
+    }
+
+    try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+
+        if (!decodedToken.exp || decodedToken.exp < currentTime) {
+            localStorage.removeItem("accessToken");
+            setAuthToken(undefined);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return false;
+    }
 };

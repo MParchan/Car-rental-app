@@ -1,23 +1,17 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
-import Navbar from "./components/navbar/Navbar";
-import Layout from "./components/layout/Layout";
-import MainPage from "./pages/MainPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import CarModelPage from "./pages/CarModelPage";
+import Navbar from "./ui/navbar/Navbar";
+import Layout from "./ui/layout/Layout";
+import { AuthProvider } from "./contexts/authContext/AuthContext";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
-    <div>
+    <AuthProvider>
       <Navbar />
       <Layout>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/m/:brandModel/:id" element={<CarModelPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <AppRoutes />
       </Layout>
-    </div>
+    </AuthProvider>
   );
 }
 

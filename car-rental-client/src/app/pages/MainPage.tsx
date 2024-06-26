@@ -16,7 +16,6 @@ export default function MainPage() {
         setModels(fetchedModels);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching models:", error);
         setLoading(false);
       }
     };

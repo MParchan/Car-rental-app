@@ -19,7 +19,6 @@ export default function CarModelPage() {
         setModel(fetchedModel);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching models:", error);
         setLoading(false);
       }
     };
