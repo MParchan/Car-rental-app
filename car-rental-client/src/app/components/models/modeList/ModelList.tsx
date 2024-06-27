@@ -9,6 +9,11 @@ export default function ModelList({ models }: { models: Model[] }) {
         <span className="text-4xl">List of models:</span>
       </div>
       <div>
+        {models.length === 0 && (
+          <div className="flex justify-center mt-12">
+            <p className="text-3xl">No models available</p>
+          </div>
+        )}
         {models.map((model) => (
           <ModelItem key={model.modelId} model={model} />
         ))}

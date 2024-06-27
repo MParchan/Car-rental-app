@@ -138,11 +138,12 @@ export default function AdminReservationsTable({
               Car: {selectedReservation.car?.model?.brand?.name}{" "}
               {selectedReservation.car?.model?.name}
             </p>
+            <p className="text-lg">User: {selectedReservation.userEmail}</p>
             <p className="text-lg">
-              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd/MM/yyyy")}
+              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">
-              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd/MM/yyyy")}
+              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">Rental location: {selectedReservation.rentalLocation?.name}</p>
             <p className="text-lg">Return location: {selectedReservation.returnLocation?.name}</p>
@@ -163,11 +164,12 @@ export default function AdminReservationsTable({
               Car: {selectedReservation.car?.model?.brand?.name}{" "}
               {selectedReservation.car?.model?.name}
             </p>
+            <p className="text-lg">User: {selectedReservation.userEmail}</p>
             <p className="text-lg">
-              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd/MM/yyyy")}
+              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">
-              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd/MM/yyyy")}
+              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">Rental location: {selectedReservation.rentalLocation?.name}</p>
             <p className="text-lg">Return location: {selectedReservation.returnLocation?.name}</p>
@@ -188,11 +190,12 @@ export default function AdminReservationsTable({
               Car: {selectedReservation.car?.model?.brand?.name}{" "}
               {selectedReservation.car?.model?.name}
             </p>
+            <p className="text-lg">User: {selectedReservation.userEmail}</p>
             <p className="text-lg">
-              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd/MM/yyyy")}
+              Start date: {format(parseISO(selectedReservation.startDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">
-              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd/MM/yyyy")}
+              End date: {format(parseISO(selectedReservation.endDate.toString()), "dd.MM.yyyy")}
             </p>
             <p className="text-lg">Rental location: {selectedReservation.rentalLocation?.name}</p>
             <p className="text-lg">Return location: {selectedReservation.returnLocation?.name}</p>
