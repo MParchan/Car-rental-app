@@ -7,8 +7,8 @@ export type Reservation = {
     userEmail: string;
     rentalLocationId: number;
     returnLocationId: number;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     rentPrice: number;
     status: "Pending" | "Started" | "Cancelled" | "Completed";
     car?: Car;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Model } from "../../../../types/models/model.types";
-import AvailableCars from "../availableCars/AvailableCars";
+import AvailableCars from "../../cars/availableCars/AvailableCars";
 
 export default function ModelDatail({ model }: { model: Model }) {
   return (

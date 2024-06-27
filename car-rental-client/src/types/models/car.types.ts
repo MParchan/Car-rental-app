@@ -2,7 +2,6 @@ import { Model } from "./model.types";
 
 export type Car = {
     carId: number;
-    barId: number;
     modelId: number;
     version: string;
     pricePerDay: number;

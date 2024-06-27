@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
+import { differenceInDays, format, parseISO } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { Location } from "../../../../types/models/location.types";
 import { getLocations } from "../../../../api/services/locationService";
 import { Model } from "../../../../types/models/model.types";
 import { getAvailableCars } from "../../../../api/services/carService";
 import { Car } from "../../../../types/models/car.types";
+import RentCarModal from "../rentCarModal/RentCarModal";
+import axios from "axios";
+import Button from "../../../ui/button/Button";
+import { isAuthenticated } from "../../../../api/services/authService";
+import { useNavigate } from "react-router-dom";
 
 const timeZone = "Europe/Warsaw"; // GMT+2
 const today = format(toZonedTime(new Date(), timeZone), "yyyy-MM-dd");
@@ -20,13 +25,21 @@ interface QuantityItem {
 
 export default function AvailableCars({ model }: { model: Model }) {
   const [locations, setLocations] = useState<Location[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState(0);
   const [loader, setLoader] = useState(false);
   const [startDateValue, setStartDateValue] = useState<string>("");
   const [endDateValue, setEndDateValue] = useState<string>("");
+  const [rentLocationId, setRendLocationId] = useState(0);
+  const [rentStartDate, setRentStartDate] = useState<string>("");
+  const [rentEndDate, setRentEndDate] = useState<string>("");
   const [carsWithQuantities, setCarsWithQuantities] = useState<CarWithQuantity[] | undefined>(
     undefined
   );
+  const [rentCarId, setRentCarId] = useState<number | null>(null);
+  const [rentalDays, setRentalDays] = useState<number | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -34,10 +47,22 @@ export default function AvailableCars({ model }: { model: Model }) {
         const fetchedLocations = await getLocations();
         setLocations(fetchedLocations);
       } catch (error) {
-        console.error("Error fetching models:", error);
+        console.log("Error fetching locations:", error);
       }
     };
     fetchLocations();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setRentCarId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,6 +78,7 @@ export default function AvailableCars({ model }: { model: Model }) {
   const handleCheckAvailableCars = async () => {
     try {
       setLoader(true);
+      setError(null);
       if (selectedLocation && startDateValue && endDateValue) {
         const fetchedCars = await getAvailableCars(
           model.modelId,
@@ -70,15 +96,35 @@ export default function AvailableCars({ model }: { model: Model }) {
         if (cars) {
           cars = cars
             .filter((car) => car.quantity > 0)
-            .sort((a, b) => a.pricePerDay - b.pricePerDay);
+            .sort((a, b) => a.pricePerDay - b.pricePerDay)
+            .map((car) => {
+              return { ...car, model: model };
+            });
           setCarsWithQuantities(cars);
+          setRendLocationId(selectedLocation);
+          setRentStartDate(startDateValue);
+          setRentEndDate(endDateValue);
+          setRentalDays(differenceInDays(parseISO(endDateValue), parseISO(startDateValue)) + 1);
         }
+        setLoader(false);
       }
-      setLoader(false);
     } catch (error) {
-      console.error("Error fetching cars:", error);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.errorMessage);
+      } else {
+        setError("Error checking available cars");
+      }
+      setCarsWithQuantities(undefined);
+      setRentalDays(null);
       setLoader(false);
     }
+  };
+
+  const handleRentCar = (carId: number) => {
+    if (!isAuthenticated()) {
+      navigate("/sign-in");
+    }
+    setRentCarId(carId);
   };
 
   return (
@@ -98,7 +144,7 @@ export default function AvailableCars({ model }: { model: Model }) {
                 name="locationSelect"
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(Number(e.target.value))}
-                className="w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-900 focus:border-2"
+                className="w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-900 focus:border-2 hover:cursor-pointer"
               >
                 <option value={0}>Choose rental location</option>
                 {locations.map((location) => (
@@ -122,7 +168,7 @@ export default function AvailableCars({ model }: { model: Model }) {
                 name="startDateInput"
                 min={today}
                 onChange={handleStartDateChange}
-                className="w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900"
+                className="w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 hover:cursor-text"
               />
             </div>
           </div>
@@ -141,41 +187,37 @@ export default function AvailableCars({ model }: { model: Model }) {
                 disabled={!startDateValue}
                 min={startDateValue || today}
                 onChange={handleEndDateChange}
-                className={`w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 
+                className={`w-60 md:w-[200px] lg:w-64 p-2 rounded-lg bg-gray-50 border border-gray-300 hover:cursor-text
                     ${!startDateValue ? "text-gray-400" : "text-gray-900"}`}
               />
             </div>
           </div>
         </div>
+        {error && <div className="text-red-500 text-center">{error}</div>}
         <div className="flex justify-center ">
-          <button
-            className={`bg-blue-500 text-white font-medium py-2 w-48 rounded-lg 
-                ${!selectedLocation || !startDateValue || !endDateValue ? "hover:cursor-not-allowed" : "hover:bg-blue-400"}`}
-            onClick={handleCheckAvailableCars}
-            disabled={!selectedLocation || !startDateValue || !endDateValue}
-          >
-            {loader ? (
-              <svg
-                aria-hidden="true"
-                role="status"
-                className="inline w-6 h-6 text-white animate-spin"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="#E5E7EB"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentColor"
-                />
-              </svg>
-            ) : (
-              "Check"
-            )}
-          </button>
+          <div className="w-48">
+            <Button
+              isLoading={loader}
+              isDisabled={!selectedLocation || !startDateValue || !endDateValue}
+              onClick={handleCheckAvailableCars}
+            >
+              Check
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 text-xl">
+        <div className="flex items-end">
+          <p>Rental for at least 3 days</p>
+          <div className="flex bg-gray-400 ml-2 mb-[2px] text-sm text-white rounded items-center px-1 h-full">
+            -10%
+          </div>
+        </div>
+        <div className="flex items-end">
+          <p>Rental for at least 5 days</p>
+          <div className="flex bg-gray-400 ml-2 mb-[2px] text-sm text-white rounded items-center px-1 h-full">
+            -20%
+          </div>
         </div>
       </div>
 
@@ -192,26 +234,60 @@ export default function AvailableCars({ model }: { model: Model }) {
                     <div className="font-semibold text-2xl mb-2">{car.version}</div>
                     <div>
                       <p className="text-lg">
-                        <span className="font-semibold">Year of production:</span>{" "}
+                        <span className="font-semibold mr-1">Year of production:</span>{" "}
                         {car.productionYear}
                       </p>
                       <p className="text-lg">
-                        <span className="font-semibold">Power:</span> {car.horsepower} KM
+                        <span className="font-semibold mr-1">Power:</span> {car.horsepower} KM
                       </p>
                       <p className="text-lg">
-                        <span className="font-semibold">Range:</span> {car.range} km
+                        <span className="font-semibold mr-1">Range:</span> {car.range} km
                       </p>
-                      <p className="text-lg">
-                        <span className="font-semibold">Price per day:</span> {car.pricePerDay}€
-                      </p>
+                      {!rentalDays || rentalDays < 3 ? (
+                        <p className="text-lg">
+                          <span className="font-semibold mr-1">Price per day:</span>
+                          {car.pricePerDay}€
+                        </p>
+                      ) : rentalDays < 5 ? (
+                        <div className=" flex text-lg items-end">
+                          <span className="font-semibold mr-1">Price per day:</span>
+                          <p className="line-through">{car.pricePerDay}€</p>
+                          <div className="flex bg-gray-400 mx-1 mb-1 text-xs text-white rounded items-center px-1 h-full">
+                            -10%
+                          </div>
+                          <p>{(car.pricePerDay * 0.9).toFixed(2)}€</p>
+                        </div>
+                      ) : (
+                        <div className=" flex text-lg items-end">
+                          <span className="font-semibold mr-1">Price per day:</span>
+                          <p className="line-through">{car.pricePerDay}€</p>
+                          <div className="flex bg-gray-400 mx-1 mb-1 text-xs text-white rounded items-center px-1 h-full">
+                            -20%
+                          </div>
+                          <p>{(car.pricePerDay * 0.8).toFixed(2)}€</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center justify-center my-2">
-                    <button className="bg-blue-500 text-white font-medium py-2 w-48 rounded-lg hover:bg-blue-400">
-                      Rent
-                    </button>
+                    <div className="w-48">
+                      <Button onClick={() => handleRentCar(car.carId)}>Rent</Button>
+                    </div>
                   </div>
                 </div>
+                {rentCarId && rentCarId === car.carId && (
+                  <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div ref={modalRef}>
+                      <RentCarModal
+                        car={car}
+                        rentalLocationId={rentLocationId}
+                        startDate={rentStartDate}
+                        endDate={rentEndDate}
+                        locations={locations}
+                      />
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
