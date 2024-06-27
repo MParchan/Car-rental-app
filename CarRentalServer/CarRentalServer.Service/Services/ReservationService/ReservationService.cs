@@ -238,16 +238,9 @@ namespace CarRentalServer.Service.Services.ReservationService
             {
                 throw new ValidationException("The status cannot be changed to Started because the reservation is not in Pending status.");
             }
-            try
-            {
-                await _locationCarServis.RentCarAsync(reservation.RentalLocationId, reservation.CarId);
-                reservation.Status = ReservationStatus.Started;
-                await UpdateReservationAsync(_mapper.Map<ReservationDto>(reservation));
-            }
-            catch
-            {
-                throw;
-            }
+            await _locationCarServis.RentCarAsync(reservation.RentalLocationId, reservation.CarId);
+            reservation.Status = ReservationStatus.Started;
+            await _reservationRepository.UpdateAsync(_mapper.Map<Reservation>(reservation));
         }
 
         public async Task EndReservationAsync(int id)
@@ -261,16 +254,9 @@ namespace CarRentalServer.Service.Services.ReservationService
             {
                 throw new ValidationException("The status cannot be changed to Completed because the reservation is not in Started status.");
             }
-            try
-            {
-                await _locationCarServis.ReturnCarAsync(reservation.ReturnLocationId, reservation.CarId);
-                reservation.Status = ReservationStatus.Completed;
-                await UpdateReservationAsync(_mapper.Map<ReservationDto>(reservation));
-            }
-            catch
-            {
-                throw;
-            }
+            await _locationCarServis.ReturnCarAsync(reservation.ReturnLocationId, reservation.CarId);
+            reservation.Status = ReservationStatus.Completed;
+            await _reservationRepository.UpdateAsync(_mapper.Map<Reservation>(reservation));
         }
 
         public async Task CancelReservationAsync(int id)
@@ -284,15 +270,9 @@ namespace CarRentalServer.Service.Services.ReservationService
             {
                 throw new ValidationException("The reservation cannot be canceled because it has already started.");
             }
-            try
-            {
-                reservation.Status = ReservationStatus.Cancelled;
-                await UpdateReservationAsync(_mapper.Map<ReservationDto>(reservation));
-            }
-            catch
-            {
-                throw;
-            }
+
+            reservation.Status = ReservationStatus.Cancelled;
+            await _reservationRepository.UpdateAsync(_mapper.Map<Reservation>(reservation));
         }
     }
 }
