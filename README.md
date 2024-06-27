@@ -16,7 +16,7 @@
 * Axios
 * Tailwind
 ## Database (MS SQL Server)
-![car-rent-db](https://github.com/MParchan/Car-rental-app/assets/85680066/28e730e7-9dbe-46a9-b551-d86902ac26f5)
+![car-rent-db](https://github.com/MParchan/Car-rental-app/assets/85680066/eae1dfb0-f34e-4dd8-8d63-b67da83c9f4c)
 ## Functionalities
 * Login and registration
 * Browsing and filtering car models for rent
