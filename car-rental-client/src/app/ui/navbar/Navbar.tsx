@@ -23,7 +23,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <div className="flex">
             <Link to="/reservations" className="sm:mx-2">
-              <button className="w-28 px-2 py-1 sm:py-2 rounded-lg border border-gray-800 text-gray-600 hover:bg-gray-200">
+              <button className="w-24 sm:w-28 py-1 sm:py-2 rounded-lg border border-gray-800 text-gray-600 hover:bg-gray-200">
                 Reservations
               </button>
             </Link>

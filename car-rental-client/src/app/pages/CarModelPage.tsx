@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getModel } from "../../api/services/modelService";
 import { Model } from "../../types/models/model.types";
 import NotFoundPage from "./NotFoundPage";
-import Loader from "../components/loader/Loader";
+import Loader from "../ui/loader/Loader";
 
 export default function CarModelPage() {
   const { brandModel, id } = useParams();

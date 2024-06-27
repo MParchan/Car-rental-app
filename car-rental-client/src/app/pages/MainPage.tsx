@@ -3,7 +3,7 @@ import ModelFilters from "../components/models/modelFilters/ModelFilters";
 import ModelList from "../components/models/modeList/ModelList";
 import { getModels } from "../../api/services/modelService";
 import { Model } from "../../types/models/model.types";
-import Loader from "../components/loader/Loader";
+import Loader from "../ui/loader/Loader";
 
 export default function MainPage() {
   const [models, setModels] = useState<Model[]>([]);

@@ -9,17 +9,27 @@ const statusColors: { [key: string]: string } = {
   Completed: "text-yellow-500"
 };
 
-interface UserReservationsTableRowProps {
+interface AdminReservationsTableRowProps {
   reservation: Reservation;
-  onShowModal: (reservationId: number) => void;
+  onShowCancelModal: (reservationId: number) => void;
+  onShowStartModal: (reservationId: number) => void;
+  onShowEndModal: (reservationId: number) => void;
 }
 
-export default function UserReservationsTableRow({
+export default function AdminReservationsTableRow({
   reservation,
-  onShowModal
-}: UserReservationsTableRowProps) {
-  const handleShowModal = () => {
-    onShowModal(reservation.reservationId);
+  onShowCancelModal,
+  onShowStartModal,
+  onShowEndModal
+}: AdminReservationsTableRowProps) {
+  const handleShowCancelModal = () => {
+    onShowCancelModal(reservation.reservationId);
+  };
+  const handleShowStartModal = () => {
+    onShowStartModal(reservation.reservationId);
+  };
+  const handleShowEndModal = () => {
+    onShowEndModal(reservation.reservationId);
   };
 
   return (
@@ -27,6 +37,7 @@ export default function UserReservationsTableRow({
       <th className="px-1 xl:px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
         {reservation.car?.model?.brand?.name} {reservation.car?.model?.name}
       </th>
+      <td className="px-1 xl:px-6 py-4">{reservation.userEmail}</td>
       <td className="px-1 xl:px-6 py-4">
         {format(parseISO(reservation.startDate.toString()), "dd.MM.yyyy")}
       </td>
@@ -39,13 +50,29 @@ export default function UserReservationsTableRow({
         {reservation.status}
       </td>
       <td className="px-1 xl:px-6 py-4">{reservation.rentPrice}€</td>
-      <td className="px-1 py-4">
+      <td className="px-1 py-4 flex justify-center">
         {reservation.status === "Pending" && (
+          <>
+            <button
+              className="px-2 py-1 bg-red-500 text-white rounded-lg"
+              onClick={handleShowCancelModal}
+            >
+              Cancel
+            </button>
+            <button
+              className="ml-1 px-2 py-1 bg-green-500 text-white rounded-lg"
+              onClick={handleShowStartModal}
+            >
+              Start
+            </button>
+          </>
+        )}
+        {reservation.status === "Started" && (
           <button
-            className="ml-2 px-2 py-1 bg-red-500 text-white rounded-lg"
-            onClick={handleShowModal}
+            className="px-2 py-1 bg-yellow-500 text-white rounded-lg"
+            onClick={handleShowEndModal}
           >
-            Cancel
+            End
           </button>
         )}
       </td>

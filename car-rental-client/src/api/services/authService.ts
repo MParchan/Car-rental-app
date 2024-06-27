@@ -68,3 +68,22 @@ export const isAuthenticated = (): boolean => {
         return false;
     }
 };
+
+interface DecodedToken {
+    [key: string]: string;
+}
+
+export const getUserRole = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return null;
+    }
+};

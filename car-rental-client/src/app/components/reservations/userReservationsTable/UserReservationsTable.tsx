@@ -50,21 +50,28 @@ export default function UserReservationsTable({
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-1 xl:px-6 py-3">
               Car
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-1 xl:px-6 py-3">
               Start date
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-1 xl:px-6 py-3">
               End Date
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-1 xl:px-6 py-3">
+              Rental Location
+            </th>
+            <th scope="col" className="px-1 xl:px-6 py-3">
+              Return Location
+            </th>
+            <th scope="col" className="px-1 xl:px-6 py-3">
               Status
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-1 xl:px-6 py-3">
               Price
             </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -91,6 +98,8 @@ export default function UserReservationsTable({
             <p className="text-lg">
               End date: {format(parseISO(canceledReservation.endDate.toString()), "dd/MM/yyyy")}
             </p>
+            <p className="text-lg">Rental location: {canceledReservation.rentalLocation?.name}</p>
+            <p className="text-lg">Return location: {canceledReservation.returnLocation?.name}</p>
             <button
               className="bg-red-500 text-white px-4 py-2 mt-4 rounded-lg"
               onClick={handleCancelReservation}

@@ -147,21 +147,21 @@ export default function RentCarModal({
           {!rentalDays || rentalDays < 3 ? (
             <p>{rentalPrice}€</p>
           ) : rentalDays < 5 ? (
-            <p className=" flex items-end">
+            <div className=" flex items-end">
               <p className="line-through">{(car.pricePerDay * rentalDays).toFixed(2)}€</p>
               <div className="flex bg-gray-400 ml-1 mr-2 mb-1 text-xs text-white rounded items-center px-1 h-5">
                 -10%
               </div>
               <p>{rentalPrice}€</p>
-            </p>
+            </div>
           ) : (
-            <p className=" flex items-end">
+            <div className=" flex items-end">
               <p className="line-through">{(car.pricePerDay * rentalDays).toFixed(2)}€</p>
               <div className="flex bg-gray-400 ml-1 mr-2 mb-1 text-xs text-white rounded items-center px-1 h-5">
                 -20%
               </div>
               <p>{rentalPrice}€</p>
-            </p>
+            </div>
           )}
         </div>
       </div>
