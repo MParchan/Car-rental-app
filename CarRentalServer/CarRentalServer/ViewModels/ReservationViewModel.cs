@@ -24,6 +24,15 @@ namespace CarRentalServer.API.ViewModels
         public LocationViewModelGet ReturnLocation { get; set; }
     }
 
+    public class PagedReservationViewModelGet
+    {
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
+        public ICollection<ReservationViewModelGet> Data { get; set; }
+    }
+
     public class ReservationViewModelPost
     {
 

@@ -40,6 +40,7 @@ namespace CarRentalServer.API.ViewModels
 
             CreateMap<ReservationDto, Reservation>().ReverseMap();
             CreateMap<ReservationDto, ReservationViewModelGet>();
+            CreateMap<PagedResponse<ReservationDto>, PagedReservationViewModelGet>();
             CreateMap<ReservationViewModelPost, ReservationDto>();
             CreateMap<ReservationViewModelPut, ReservationDto>();
 
