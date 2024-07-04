@@ -43,6 +43,7 @@ export const createManager = async (credentials: {
 };
 
 export const logout = () => {
+    localStorage.removeItem("accessToken");
     setAuthToken(undefined);
 };
 

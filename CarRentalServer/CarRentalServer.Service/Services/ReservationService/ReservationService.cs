@@ -6,6 +6,7 @@ using CarRentalServer.Service.DTOs;
 using CarRentalServer.Service.Services.CarService;
 using CarRentalServer.Service.Services.LocationCarServis;
 using CarRentalServer.Service.Services.LocationServis;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,18 +34,50 @@ namespace CarRentalServer.Service.Services.ReservationService
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string userEmail)
+        public async Task<PagedResponse<ReservationDto>> GetAllReservationsAsync(string userEmail, int pageNumber, int pageSize, string sortField, string sortOrder)
         {
             var user = await _userRepository.GetUserByEmailAsync(userEmail);
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
+
+            IQueryable<Reservation> query;
             if (user.Role.Name.Equals("Admin") || user.Role.Name.Equals("Manager"))
             {
-                return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllWithIncludesAsync());
+                query = _reservationRepository.GetAllWithIncludes();
             }
-            return _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetAllUserReservationsWithIncludesAsync(userEmail));
+            else
+            {
+                query = _reservationRepository.GetAllUserReservationsWithIncludes(userEmail);
+            }
+
+            // Sorting
+            var property = typeof(ReservationDto).GetProperties().FirstOrDefault(p => p.Name == sortField && !p.GetMethod.IsVirtual);
+            if (property == null)
+            {
+                sortField = "ReservationId";
+            }
+            if (!string.IsNullOrEmpty(sortField))
+            {
+                query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(e => EF.Property<object>(e, sortField)) : query.OrderBy(e => EF.Property<object>(e, sortField));
+            }
+
+            // Pagination
+            var totalCount = await query.CountAsync();
+            var reservations = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var reservationsDto = _mapper.Map<List<ReservationDto>>(reservations);
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var pagedReservations = new PagedResponse<ReservationDto>(
+                pageNumber,
+                pageSize,
+                totalCount,
+                totalPages,
+                reservationsDto
+            );
+
+            return pagedReservations;
         }
 
         public async Task<IEnumerable<CarQuantityDto>> GetCarsQuantityWithoutPendingReservationAsync(IEnumerable<LocationCarDto> carsQuantity, DateTime startDate, DateTime endDate)

@@ -9,7 +9,7 @@ namespace CarRentalServer.Service.Services.ReservationService
 {
     public interface IReservationService
     {
-        Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string userEmail);
+        Task<PagedResponse<ReservationDto>> GetAllReservationsAsync(string userEmail, int pageNumber, int pageSize, string sortField, string sortOrder);
         Task<IEnumerable<CarQuantityDto>> GetCarsQuantityWithoutPendingReservationAsync(IEnumerable<LocationCarDto> carsQuantity, DateTime startDate, DateTime endDate);
         Task<ReservationDto> GetReservationByIdAsync(string userEmail, int id);
         Task<ReservationDto> AddReservationAsync(string userEmail, ReservationDto reservation);

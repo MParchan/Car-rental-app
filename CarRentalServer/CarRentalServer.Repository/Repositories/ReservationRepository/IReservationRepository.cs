@@ -11,6 +11,8 @@ namespace CarRentalServer.Repository.Repositories.ReservationRepository
     {
         Task<IEnumerable<Reservation>> GetAllWithIncludesAsync();
         Task<IEnumerable<Reservation>> GetAllUserReservationsWithIncludesAsync(string userEmail);
+        IQueryable<Reservation> GetAllWithIncludes();
+        IQueryable<Reservation> GetAllUserReservationsWithIncludes(string userEmail);
         Task<Reservation> GetByIdWithIncludesAsync(int id);
         Task<Reservation> GetByIdNoTrackingAsync(int id);
         Task<int> NumberOfPendingReservations(int locationId, int carId, DateTime startDate, DateTime endDate);

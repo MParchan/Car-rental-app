@@ -25,7 +25,12 @@ namespace CarRentalServer.API.Controllers
 
         // GET: api/reservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReservationViewModelGet>>> GetAllReservations()
+        public async Task<ActionResult<PagedReservationViewModelGet>> GetAllReservations(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string sortField = "ReservationId",
+            [FromQuery] string sortOrder = "desc"
+        )
         {
             try
             {
@@ -34,8 +39,8 @@ namespace CarRentalServer.API.Controllers
                 {
                     return Unauthorized(new { ErrorMessage = "Email not found in token." });
                 }
-                var reservations = await _reservationService.GetAllReservationsAsync(userEmail);
-                return Ok(_mapper.Map<List<ReservationViewModelGet>>(reservations));
+                var reservations = await _reservationService.GetAllReservationsAsync(userEmail, pageNumber, pageSize, sortField, sortOrder);
+                return Ok(_mapper.Map<PagedReservationViewModelGet>(reservations));
             }
             catch (UnauthorizedAccessException)
             {

@@ -7,11 +7,19 @@ import { cancelReservation } from "../../../../api/services/reservationService";
 interface UserReservationsTableProps {
   reservations: Reservation[];
   onFetchReservations: () => Promise<void>;
+  sortField: string;
+  setSortField: (sortField: string) => void;
+  sortOrder: string;
+  setSortOrder: (sortOrder: string) => void;
 }
 
 export default function UserReservationsTable({
   reservations,
-  onFetchReservations
+  onFetchReservations,
+  sortField,
+  setSortField,
+  sortOrder,
+  setSortOrder
 }: UserReservationsTableProps) {
   const [canceledReservationId, setCanceledReservationId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,31 +53,67 @@ export default function UserReservationsTable({
     onFetchReservations();
   };
 
+  const handleSort = (field: string) => {
+    const isAsc = sortField === field && sortOrder === "asc";
+    setSortField(field);
+    setSortOrder(isAsc ? "desc" : "asc");
+  };
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Car
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("CarId")}
+            >
+              Car {sortField === "CarId" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Start date
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("StartDate")}
+            >
+              Start date {sortField === "StartDate" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              End Date
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("EndDate")}
+            >
+              End Date {sortField === "EndDate" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Rental Location
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("RentalLocationId")}
+            >
+              Rental Location{" "}
+              {sortField === "RentalLocationId" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Return Location
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("ReturnLocationId")}
+            >
+              Return Location{" "}
+              {sortField === "ReturnLocationId" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Status
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("Status")}
+            >
+              Status {sortField === "Status" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
-            <th scope="col" className="px-1 xl:px-6 py-3">
-              Price
+            <th
+              scope="col"
+              className="px-1 xl:px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("RentPrice")}
+            >
+              Price {sortField === "RentPrice" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
             </th>
             <th></th>
           </tr>

@@ -5,20 +5,50 @@ import { getReservations } from "../../api/services/reservationService";
 import UserReservationsTable from "../components/reservations/userReservationsTable/UserReservationsTable";
 import { getUserRole } from "../../api/services/authService";
 import AdminReservationsTable from "../components/reservations/adminReservationTable/AdminReservationsTable";
+import Pagination from "../ui/pagination/Pagination";
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [sortField, setSortField] = useState<string>("ReservationId");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
   const [loading, setLoading] = useState(true);
   const role = getUserRole();
 
   useEffect(() => {
-    handleFetchReservations();
-  }, []);
+    const fetchReservations = async () => {
+      try {
+        const params = {
+          pageNumber: pageNumber,
+          pageSize: pageSize,
+          sortField: sortField,
+          sortOrder: sortOrder
+        };
+        const fetchedReservations = await getReservations(params);
+        setReservations(fetchedReservations.data);
+        setTotalPages(fetchedReservations.totalPages);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, [pageNumber, pageSize, sortField, sortOrder]);
 
   const handleFetchReservations = async () => {
     try {
-      const fetchedReservations = await getReservations();
-      setReservations(fetchedReservations);
+      const params = {
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortField: sortField,
+        sortOrder: sortOrder
+      };
+      const fetchedReservations = await getReservations(params);
+      setReservations(fetchedReservations.data);
+      setTotalPages(fetchedReservations.totalPages);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -35,13 +65,28 @@ export default function ReservationsPage() {
         <AdminReservationsTable
           reservations={reservations}
           onFetchReservations={handleFetchReservations}
+          sortField={sortField}
+          setSortOrder={setSortOrder}
+          sortOrder={sortOrder}
+          setSortField={setSortField}
         />
       ) : (
         <UserReservationsTable
           reservations={reservations}
           onFetchReservations={handleFetchReservations}
+          sortField={sortField}
+          setSortOrder={setSortOrder}
+          sortOrder={sortOrder}
+          setSortField={setSortField}
         />
       )}
+      <Pagination
+        pageNumber={pageNumber}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        setPageNumber={setPageNumber}
+        setPageSize={setPageSize}
+      />
     </div>
   );
 }
