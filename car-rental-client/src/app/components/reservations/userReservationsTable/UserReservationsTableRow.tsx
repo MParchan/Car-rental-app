@@ -38,7 +38,7 @@ export default function UserReservationsTableRow({
       <td className={`px-1 xl:px-6 py-4 ${statusColors[reservation.status]}`}>
         {reservation.status}
       </td>
-      <td className="px-1 xl:px-6 py-4">{reservation.rentPrice}€</td>
+      <td className="px-1 xl:px-6 py-4">{reservation.rentPrice.toFixed(2)} €</td>
       <td className="px-1 py-4">
         {reservation.status === "Pending" && (
           <button
