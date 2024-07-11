@@ -1,6 +1,6 @@
 import React from "react";
 import { Reservation } from "../../../../types/models/reservation.types";
-import { format, parseISO } from "date-fns";
+import { format, isBefore, parseISO } from "date-fns";
 
 const statusColors: { [key: string]: string } = {
   Pending: "text-blue-500",
@@ -59,12 +59,15 @@ export default function AdminReservationsTableRow({
             >
               Cancel
             </button>
-            <button
-              className="ml-1 px-2 py-1 bg-green-500 text-white rounded-lg"
-              onClick={handleShowStartModal}
-            >
-              Start
-            </button>
+            {!isBefore(new Date(), parseISO(reservation.startDate.toString())) &&
+              isBefore(new Date(), parseISO(reservation.endDate.toString())) && (
+                <button
+                  className="ml-1 px-2 py-1 bg-green-500 text-white rounded-lg"
+                  onClick={handleShowStartModal}
+                >
+                  Start
+                </button>
+              )}
           </>
         )}
         {reservation.status === "Started" && (
