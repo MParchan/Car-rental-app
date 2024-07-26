@@ -1,5 +1,5 @@
 # Car-rental-app
-#### Car rental app that lets you rent Tesla cars in Majorca
+#### Car rental app that lets you rent Tesla cars in Mallorca
 ## Configuration
 * Open CarRentalServar in visual studio and then in Package Manager console run `update-database` command
 * Run the program to load sample data to the database and start the server
