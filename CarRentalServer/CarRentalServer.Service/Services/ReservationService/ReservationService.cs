@@ -42,30 +42,19 @@ namespace CarRentalServer.Service.Services.ReservationService
                 throw new UnauthorizedAccessException();
             }
 
-            IQueryable<Reservation> query;
+            int totalCount = 0;
+            IEnumerable<Reservation> reservations;
             if (user.Role.Name.Equals("Admin") || user.Role.Name.Equals("Manager"))
             {
-                query = _reservationRepository.GetAllWithIncludes();
+                totalCount = await _reservationRepository.GetTotalReservationCountAsync();
+                reservations = await _reservationRepository.GetAllWithIncludesAsync(pageNumber, pageSize, sortField, sortOrder);
             }
             else
             {
-                query = _reservationRepository.GetAllUserReservationsWithIncludes(userEmail);
+                totalCount = await _reservationRepository.GetUserReservationsCountAsync(userEmail);
+                reservations = await _reservationRepository.GetAllUserReservationsWithIncludesAsync(userEmail, pageNumber, pageSize, sortField, sortOrder);
             }
 
-            // Sorting
-            var property = typeof(ReservationDto).GetProperties().FirstOrDefault(p => p.Name == sortField && !p.GetMethod.IsVirtual);
-            if (property == null)
-            {
-                sortField = "ReservationId";
-            }
-            if (!string.IsNullOrEmpty(sortField))
-            {
-                query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(e => EF.Property<object>(e, sortField)) : query.OrderBy(e => EF.Property<object>(e, sortField));
-            }
-
-            // Pagination
-            var totalCount = await query.CountAsync();
-            var reservations = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
             var reservationsDto = _mapper.Map<List<ReservationDto>>(reservations);
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
